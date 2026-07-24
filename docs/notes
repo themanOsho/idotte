@@ -1,0 +1,282 @@
+global.css
+@import url('https://googleapis.com');
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Wire up Tailwind classes directly to your oklch variables */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Map custom typography definitions */
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+
+  /* Set structural elements scaling offsets */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ====================== FONTS ====================== */
+:root {
+  --font-heading: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ====================== BRANDING COLORS (FORCED DARK TOKENS) ====================== */
+/* 
+  We assign your .dark oklch values straight to :root. 
+  This locks the entire platform into dark mode instantly, even if the html tag doesn't have a class!
+*/
+:root, .dark {
+  --background: oklch(0.16 0.01 160);
+  --foreground: oklch(0.96 0.003 160);
+  --card: oklch(0.2 0.01 160);
+  --card-foreground: oklch(0.96 0.003 160);
+  --popover: oklch(0.2 0.01 160);
+  --popover-foreground: oklch(0.96 0.003 160);
+  
+  /* Lagos-inspired Emerald */
+  --primary: oklch(0.72 0.14 154);
+  --primary-foreground: oklch(0.18 0 0);
+  
+  --secondary: oklch(0.24 0.01 160);
+  --secondary-foreground: oklch(0.96 0.003 160);
+  --muted: oklch(0.24 0.01 160);
+  --muted-foreground: oklch(0.72 0.005 160);
+  
+  /* Amber Accent */
+  --accent: oklch(0.82 0.12 90);
+  --accent-foreground: oklch(0.18 0 0);
+  
+  --destructive: oklch(0.63 0.22 25);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: var(--primary);
+  --radius: 0.875rem;
+}
+
+/* ====================== BASE STYLES ====================== */
+html {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: var(--font-body);
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+  }
+
+  code, pre {
+    font-family: var(--font-mono);
+  }
+
+  ::selection {
+    background: cubic-bezier(var(--primary) / 0.25);
+    color: var(--foreground);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 9999px;
+    transition: background 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+  }
+}
+
+@layer utilities {
+  .page-container {
+    @apply mx-auto w-full max-w-7xl px-6 lg:px-8;
+  }
+  .page-boxed {
+    @apply mx-auto w-full max-w-5xl px-6 lg:px-8;
+  }
+  .page-header {
+    @apply flex flex-col gap-3 pb-10;
+  }
+  .page-title {
+    @apply font-heading text-5xl font-semibold tracking-tight leading-tight md:text-6xl;
+  }
+  .page-description {
+    @apply text-base leading-8 text-muted-foreground md:text-lg;
+  }
+  .section-card {
+    @apply rounded-3xl border bg-card/40 border-border backdrop-blur-2xl p-2 shadow-xl shadow-black/20 ring-1 ring-border/5;
+  }
+  .upload-zone {
+    @apply flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border-2 border-dashed border-border bg-background/40 hover:border-primary/50 hover:bg-primary/[0.02] px-6 text-center transition-all duration-300;
+  }
+}
+
+page
+import { FileSpreadsheet, ArrowUpFromLine, ShieldCheck, History } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export default function HomePage() {
+  return (
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden py-16 sm:py-24">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="absolute top-1/4 left-1/2 -z-10 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+
+      <div className="page-boxed w-full space-y-12 px-4">
+
+        {/* Hero Section */}
+        <section className="page-header items-center text-center space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-primary backdrop-blur-md">
+            Idotte
+          </div>
+
+          <h1 className="page-title font-heading text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl bg-gradient-to-b from-foreground via-foreground to-foreground/70 bg-clip-text">
+            Placement Report <br className="hidden sm:inline" /> Generator
+          </h1>
+
+          <p className="page-description max-w-xl text-base text-muted-foreground sm:text-lg mx-auto">
+            Generate complex examination placement reports from allocation datasets and candidate lists in minutes instead of tedious hours.
+          </p>
+        </section>
+
+        {/* Upload Container Layer */}
+        <section className="section-card relative overflow-hidden">
+          <div className="upload-zone group relative px-6 cursor-pointer">
+            
+            {/* Visual Indicator Top Right */}
+            <div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-medium bg-muted text-muted-foreground border border-border/40">
+              <ShieldCheck className="h-3 w-3 text-primary" /> Secure Parsing
+            </div>
+
+            {/* Icon Box */}
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-b from-background to-muted border border-border/80 shadow-inner group-hover:scale-105 transition-transform duration-300">
+              <FileSpreadsheet className="h-10 w-10 text-primary" />
+            </div>
+
+            {/* Typography */}
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">
+              Upload Dataset
+            </h2>
+
+            <p className="mt-2 max-w-sm text-center text-sm text-muted-foreground/90 leading-relaxed">
+              Drag and drop your official Excel workbook here or click below to browse local storage.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs justify-center">
+              <Button size="lg" className="w-full gap-2.5 font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-primary/20 transition-all duration-300">
+                <ArrowUpFromLine className="h-4 w-4" />
+                Choose Excel File
+              </Button>
+            </div>
+
+            <p className="mt-5 text-xs text-muted-foreground/70">
+              Supports standard <span className="font-medium text-foreground">.xlsx</span> matrices up to 25MB
+            </p>
+          </div>
+        </section>
+
+        {/* Platform Footer / Quick Meta Info */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/40 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-ping" />
+            System Status: Operational
+          </div>
+          <span className="font-medium tracking-wider">Idotte v0.1.0</span>
+          <button className="flex items-center gap-1 hover:text-foreground transition-colors">
+            <History className="h-3.5 w-3.5" /> Recent Runs
+          </button>
+        </div>
+
+      </div>
+    </main>
+  );
+}
+
+layout
+import type { Metadata } from "next";
+import "./globals.css";
+import { ThemeProvider } from "@/components/shared/theme-provider";
+import { siteConfig } from "@/config/site";
+
+export const metadata: Metadata = {
+  title: {
+    default: siteConfig.name,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className="h-full dark"
+    >
+      <body className="min-h-screen">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

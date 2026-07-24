@@ -4,16 +4,9 @@
 
 ### Added
 
-### Changed
-
-### Fixed
-
----
-
-## v0.1.0
-
-### Added
-
-- Initial project scaffold
-- Theme support
-- Folder architecture
+- Established Idotte visual design system.
+- Added responsive landing page.
+- Added reusable layout utility classes.
+- Added default dark mode support.
+- Added upload card placeholder for Allocation Dataset.
+- Introduced theme configuration.

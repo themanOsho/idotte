@@ -1,7 +1,15 @@
+"use client";
+
+import { useState } from "react";
+import { AllocationUpload } from "@/components/upload/allocation-upload";
 import { FileSpreadsheet, ArrowUpFromLine, ShieldCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
+
+  const [allocationFile, setAllocationFile] =
+  useState<File | null>(null);
+
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden py-16 sm:py-24">
       {/* Premium Background Elements */}
@@ -49,11 +57,17 @@ export default function HomePage() {
             </p>
 
             {/* Action Buttons */}
-            <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs justify-center">
-              <Button size="lg" className="w-full gap-2.5 font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-primary/20 transition-all duration-300">
-                <ArrowUpFromLine className="h-4 w-4" />
-                Choose Excel File
-              </Button>
+            <div className="mt-8 flex flex-col items-center gap-3 w-full max-w-xs justify-center">
+              <AllocationUpload
+                onFileSelect={setAllocationFile}
+              />
+              {
+                allocationFile && (
+                  <p className="mt-4 text-sm text-primary">
+                    Selected: {allocationFile.name}
+                  </p>
+                )
+              }
             </div>
 
             <p className="mt-5 text-xs text-muted-foreground/70">
