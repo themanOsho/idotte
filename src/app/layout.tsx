@@ -1,19 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { siteConfig } from "@/config/site";
-
-const geistSans = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -32,13 +20,9 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn(
-        "h-full antialiased",
-        geistSans.variable,
-        geistMono.variable
-      )}
+      className="h-full dark"
     >
-      <body className="min-h-screen bg-background text-foreground">
+      <body className="min-h-screen">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

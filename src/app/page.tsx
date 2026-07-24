@@ -1,70 +1,78 @@
-import { FileSpreadsheet, ArrowUpFromLine } from "lucide-react";
+import { FileSpreadsheet, ArrowUpFromLine, ShieldCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
-    <main className="page-container flex min-h-screen items-center justify-center py-12">
-      <div className="page-boxed space-y-10">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden py-16 sm:py-24">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="absolute top-1/4 left-1/2 -z-10 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
 
-        {/* Hero */}
+      <div className="page-boxed w-full space-y-12 px-4">
 
-        <section className="page-header items-center text-center">
-
-          <div className="rounded-full border border-primary/20 bg-primary/10 px-4 py-1 text-xs font-medium uppercase tracking-[0.25em] text-primary">
+        {/* Hero Section */}
+        <section className="page-header items-center text-center space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-primary backdrop-blur-md">
             Idotte
           </div>
 
-          <h1 className="page-title max-w-3xl">
-            Placement Report Generator
+          <h1 className="page-title font-heading text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl bg-gradient-to-b from-foreground via-foreground to-foreground/70 bg-clip-text">
+            Placement Report <br className="hidden sm:inline" /> Generator
           </h1>
 
-          <p className="page-description max-w-xl text-base">
-            Generate examination placement reports from allocation datasets
-            and client candidate lists in minutes instead of hours.
+          <p className="page-description max-w-xl text-base text-muted-foreground sm:text-lg mx-auto">
+            Generate complex examination placement reports from allocation datasets and candidate lists in minutes instead of tedious hours.
           </p>
-
         </section>
 
-        {/* Upload */}
-
-        <section className="section-card">
-
-          <div className="upload-zone">
-
-            <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-
-              <FileSpreadsheet className="h-8 w-8 text-primary" />
-
+        {/* Upload Container Layer */}
+        <section className="section-card relative overflow-hidden">
+          <div className="upload-zone group relative px-6 cursor-pointer">
+            
+            {/* Visual Indicator Top Right */}
+            <div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-md px-2.5 py-1 text-[11px] font-medium bg-muted text-muted-foreground border border-border/40">
+              <ShieldCheck className="h-3 w-3 text-primary" /> Secure Parsing
             </div>
 
-            <h2 className="text-xl font-semibold">
-              Upload Allocation Dataset
+            {/* Icon Box */}
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-b from-background to-muted border border-border/80 shadow-inner group-hover:scale-105 transition-transform duration-300">
+              <FileSpreadsheet className="h-10 w-10 text-primary" />
+            </div>
+
+            {/* Typography */}
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">
+              Upload Dataset
             </h2>
 
-            <p className="mt-3 max-w-md text-center text-sm text-muted-foreground leading-6">
-              Upload the official Allocation workbook to begin generating
-              placement reports.
+            <p className="mt-2 max-w-sm text-center text-sm text-muted-foreground/90 leading-relaxed">
+              Drag and drop your official Excel workbook here or click below to browse local storage.
             </p>
 
-            <Button size="lg" className="mt-8 gap-2">
+            {/* Action Buttons */}
+            <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs justify-center">
+              <Button size="lg" className="w-full gap-2.5 font-medium rounded-xl shadow-md shadow-primary/10 hover:shadow-primary/20 transition-all duration-300">
+                <ArrowUpFromLine className="h-4 w-4" />
+                Choose Excel File
+              </Button>
+            </div>
 
-              <ArrowUpFromLine className="h-4 w-4" />
-
-              Choose Excel File
-
-            </Button>
-
-            <p className="mt-5 text-xs text-muted-foreground">
-              Supports .xlsx files
+            <p className="mt-5 text-xs text-muted-foreground/70">
+              Supports standard <span className="font-medium text-foreground">.xlsx</span> matrices up to 25MB
             </p>
-
           </div>
-
         </section>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Idotte v0.1.0
-        </p>
+        {/* Platform Footer / Quick Meta Info */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/40 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-ping" />
+            System Status: Operational
+          </div>
+          <span className="font-medium tracking-wider">Idotte v0.1.0</span>
+          <button className="flex items-center gap-1 hover:text-foreground transition-colors">
+            <History className="h-3.5 w-3.5" /> Recent Runs
+          </button>
+        </div>
 
       </div>
     </main>
