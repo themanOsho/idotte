@@ -4,11 +4,23 @@ import { useState } from "react";
 import { AllocationUpload } from "@/components/upload/allocation-upload";
 import { FileSpreadsheet, ArrowUpFromLine, ShieldCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { parseAllocationWorkbook } from "@/engine/allocation/parser";
 
 export default function HomePage() {
 
   const [allocationFile, setAllocationFile] =
   useState<File | null>(null);
+
+  async function handleAllocationFile(file: File) {
+  // Save the selected file
+  setAllocationFile(file);
+
+  // Read the workbook
+  const workbook = await parseAllocationWorkbook(file);
+
+  const summary = await parseAllocationWorkbook(file);
+  console.table(summary.worksheets);
+}
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden py-16 sm:py-24">
@@ -25,7 +37,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="page-title font-heading text-4xl font-bold tracking-tight text-transparent sm:text-5xl md:text-6xl bg-gradient-to-b from-foreground via-foreground to-foreground/70 bg-clip-text">
-            Placement Report <br className="hidden sm:inline" /> Generator
+            Placement
           </h1>
 
           <p className="page-description max-w-xl text-base text-muted-foreground sm:text-lg mx-auto">
@@ -53,13 +65,13 @@ export default function HomePage() {
             </h2>
 
             <p className="mt-2 max-w-sm text-center text-sm text-muted-foreground/90 leading-relaxed">
-              Drag and drop your official Excel workbook here or click below to browse local storage.
+              Drag and drop your Excel workbook here or click below to browse local storage.
             </p>
 
             {/* Action Buttons */}
             <div className="mt-8 flex flex-col items-center gap-3 w-full max-w-xs justify-center">
               <AllocationUpload
-                onFileSelect={setAllocationFile}
+                onFileSelect={handleAllocationFile}
               />
               {
                 allocationFile && (

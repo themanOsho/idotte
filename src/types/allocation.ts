@@ -1,11 +1,28 @@
-export interface AllocationWorkbook {
-  file: File;
-  fileName: string;
-  fileSize: number;
+/**
+ * A single candidate extracted from the official
+ * Allocation workbook.
+ */
+export interface AllocationRecord {
+  candidateId: string;
+  fullName: string;
+  ledName: string;
+  schoolName: string;
+  centreName: string;
 }
 
-export interface ParsedWorksheet {
+/**
+ * Parsed worksheet.
+ */
+export interface AllocationWorksheet {
   name: string;
-  headers: string[];
-  rows: Record<string, unknown>[];
+  rowCount: number;
+  records: AllocationRecord[];
+}
+
+/**
+ * Parsed allocation workbook.
+ */
+export interface AllocationWorkbookSummary {
+  sheetCount: number;
+  worksheets: AllocationWorksheet[];
 }
