@@ -5,22 +5,41 @@ import { AllocationUpload } from "@/components/upload/allocation-upload";
 import { FileSpreadsheet, ArrowUpFromLine, ShieldCheck, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { parseAllocationWorkbook } from "@/engine/allocation/parser";
+import type { WorkbookPreview as WorkbookPreviewType } from "@/types/preview";
+import { WorkbookPreview } from "@/components/allocation/workbook-preview";
 
 export default function HomePage() {
 
   const [allocationFile, setAllocationFile] =
   useState<File | null>(null);
 
-  async function handleAllocationFile(file: File) {
-  // Save the selected file
-  setAllocationFile(file);
+  const [preview, setPreview] =
+  useState<WorkbookPreviewType | null>(null);
 
   // Read the workbook
-  const workbook = await parseAllocationWorkbook(file);
+  async function handleAllocationUpload(file: File) {
+    setAllocationFile(file);
 
-  const summary = await parseAllocationWorkbook(file);
-  console.table(summary.worksheets);
-}
+    const summary = await parseAllocationWorkbook(file);
+
+    setPreview({
+      fileName: file.name,
+
+      sheetCount: summary.sheetCount,
+
+      totalRecords: summary.worksheets.reduce(
+        (total, sheet) => total + sheet.rowCount,
+        0
+      ),
+
+      worksheets: summary.worksheets.map((sheet) => ({
+        name: sheet.name,
+        rowCount: sheet.rowCount,
+      })),
+    });
+
+    console.table(summary.worksheets[0].records.slice(0, 5));
+  }
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden py-16 sm:py-24">
@@ -71,7 +90,7 @@ export default function HomePage() {
             {/* Action Buttons */}
             <div className="mt-8 flex flex-col items-center gap-3 w-full max-w-xs justify-center">
               <AllocationUpload
-                onFileSelect={handleAllocationFile}
+                onFileSelect={handleAllocationUpload}
               />
               {
                 allocationFile && (
@@ -87,6 +106,15 @@ export default function HomePage() {
             </p>
           </div>
         </section>
+
+        {preview && (
+          <WorkbookPreview
+            fileName={preview.fileName}
+            sheetCount={preview.sheetCount}
+            totalRecords={preview.totalRecords}
+            worksheets={preview.worksheets}
+          />
+        )}
 
         {/* Platform Footer / Quick Meta Info */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-border/40 text-xs text-muted-foreground">
