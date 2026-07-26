@@ -2,15 +2,17 @@
 
 import {
   FileSpreadsheet,
-  ShieldCheck,
   History,
+  Users,
 } from "lucide-react";
 
-import { AllocationUpload } from "@/components/upload/allocation-upload";
+import { FileUploadCard } from "@/components/shared/file-upload-card";
 import { WorkbookPreview } from "@/components/allocation/workbook-preview";
 import { UploadProgressModal } from "@/components/shared/upload-progress-modal";
-
 import { useWorkspace } from "@/hooks/use-workspace";
+import { WorkspaceOverview } from "@/components/workspace/workspace-overview";
+import { MatchingDashboard } from "@/components/matching/matching-dashboard";
+import { DuplicateResolution } from "@/components/matching/duplicate-resolution";
 
 export default function HomePage() {
 
@@ -53,60 +55,82 @@ export default function HomePage() {
 
         {/* Upload */}
 
-        <section className="section-card">
+        {/* Stage 1 */}
 
-          <div className="upload-zone relative">
+        {!workspace.allocationSummary && (
+          <FileUploadCard
+            title="Upload Allocation Dataset"
+            description="Upload the official allocation workbook to begin."
+            buttonText="Choose Allocation Workbook"
+            icon={<FileSpreadsheet className="h-10 w-10 text-primary" />}
+            onFileSelect={workspace.uploadAllocation}
+          />
+        )}
 
-            <div className="absolute right-4 top-4 flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px]">
+        {/* Stage 2 */}
 
-              <ShieldCheck className="h-3 w-3 text-primary" />
+        {workspace.allocationSummary &&
+        !workspace.clientSummary && (
+          <>
+            <WorkbookPreview
+              fileName={workspace.allocationPreview!.fileName}
+              sheetCount={workspace.allocationPreview!.sheetCount}
+              totalRecords={workspace.allocationPreview!.totalRecords}
+              uniqueCandidates={workspace.allocationPreview!.uniqueCandidates}
+              duplicateRecords={workspace.allocationPreview!.duplicateRecords}
+              namesWithDuplicates={workspace.allocationPreview!.namesWithDuplicates}
+              worksheets={workspace.allocationPreview!.worksheets}
+            />
 
-              Secure Parsing
+            <FileUploadCard
+              title="Upload Client List"
+              description="Upload the client workbook for matching."
+              buttonText="Choose Client Workbook"
+              icon={<Users className="h-10 w-10 text-primary" />}
+              onFileSelect={workspace.uploadClient}
+            />
+          </>
+        )}
 
-            </div>
+        {/* Stage 3 */}
 
-            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl border bg-muted">
+        {workspace.allocationSummary &&
+        workspace.clientSummary && (
+          <WorkspaceOverview
+            allocationRecords={workspace.allocationSummary.totalRecords}
+            clientRecords={workspace.clientSummary.totalRecords}
+          />
+        )}
 
-              <FileSpreadsheet className="h-10 w-10 text-primary" />
+        {workspace.matchingResult && (
+          <MatchingDashboard
+            matchedCount={workspace.matchingResult.matchedCount}
+            unmatchedCount={workspace.matchingResult.unmatchedCount}
+            duplicateCount={workspace.matchingResult.duplicateCount}
+            matchRate={workspace.matchingResult.matchRate}
+          />
+        )}
 
-            </div>
+        {workspace.matchingResult && (
 
-            <h2 className="text-xl font-semibold">
+          <DuplicateResolution
 
-              Upload Dataset
+            duplicates={
+              workspace.matchingResult.duplicateMatches
+            }
 
-            </h2>
+            onResolve={(client, allocation) =>
 
-            <p className="mt-3 max-w-xs text-center text-sm text-muted-foreground">
+              workspace.resolveDuplicate({
 
-              Drag & drop or choose your allocation workbook.
+                client,
 
-            </p>
+                selectedAllocation: allocation,
 
-            <div className="mt-8">
+              })
 
-              <AllocationUpload
-                onFileSelect={workspace.uploadAllocation}
-              />
+            }
 
-            </div>
-
-          </div>
-
-        </section>
-
-        {/* Workbook Preview */}
-
-        {workspace.allocationPreview && (
-
-          <WorkbookPreview
-            fileName={workspace.allocationPreview.fileName}
-            sheetCount={workspace.allocationPreview.sheetCount}
-            totalRecords={workspace.allocationPreview.totalRecords}
-            uniqueCandidates={workspace.allocationPreview.uniqueCandidates}
-            duplicateRecords={workspace.allocationPreview.duplicateRecords}
-            namesWithDuplicates={workspace.allocationPreview.namesWithDuplicates}
-            worksheets={workspace.allocationPreview.worksheets}
           />
 
         )}

@@ -2,6 +2,7 @@ import type { AllocationIndex } from "@/engine/allocation/indexer";
 import type { ClientRecord } from "@/types/client";
 
 import type {
+  DuplicateMatch,
   MatchedRecord,
   MatchingResult,
   UnmatchedRecord,
@@ -12,9 +13,10 @@ import { normalizeCandidateName } from "@/utils/normalize-candidate-name";
 /**
  * Matches client records against the Allocation index.
  *
- * Every matching Allocation record is returned.
- * This allows duplicate candidate names to be
- * handled safely instead of selecting the first one.
+ * Matching behaviour:
+ * - 0 matches  -> Unmatched
+ * - 1 match    -> Matched
+ * - 2+ matches -> Duplicate Resolution
  */
 export function matchClients(
   allocationIndex: AllocationIndex,
@@ -25,6 +27,8 @@ export function matchClients(
 
   const unmatched: UnmatchedRecord[] = [];
 
+  const duplicateMatches: DuplicateMatch[] = [];
+
   for (const client of clientRecords) {
 
     const key = normalizeCandidateName(
@@ -34,30 +38,56 @@ export function matchClients(
     const allocations =
       allocationIndex.get(key);
 
-    if (
-      allocations &&
-      allocations.length > 0
-    ) {
-
-      matched.push({
-
-        client,
-
-        allocations,
-
-      });
-
-    } else {
+    if (!allocations || allocations.length === 0) {
 
       unmatched.push({
-
         client,
-
       });
+
+      continue;
 
     }
 
+    if (allocations.length === 1) {
+
+      matched.push({
+
+          client,
+
+          allocation: allocations[0],
+
+      });
+
+      continue;
+
+    }
+
+    duplicateMatches.push({
+
+      client,
+
+      allocations,
+
+    });
+
   }
+
+  const totalClientRecords =
+    clientRecords.length;
+
+  const matchedCount =
+    matched.length;
+
+  const unmatchedCount =
+    unmatched.length;
+
+  const duplicateCount =
+    duplicateMatches.length;
+
+  const matchRate =
+    totalClientRecords === 0
+      ? 0
+      : (matchedCount / totalClientRecords) * 100;
 
   return {
 
@@ -65,14 +95,17 @@ export function matchClients(
 
     unmatched,
 
-    totalClientRecords:
-      clientRecords.length,
+    duplicateMatches,
 
-    matchedCount:
-      matched.length,
+    totalClientRecords,
 
-    unmatchedCount:
-      unmatched.length,
+    matchedCount,
+
+    unmatchedCount,
+
+    duplicateCount,
+
+    matchRate,
 
   };
 

@@ -17,6 +17,7 @@ import { UploadStage } from "@/types/upload";
 import { processClientWorkbook } from "@/services/client-service";
 import { processMatching } from "@/services/matching-service";
 import { generateReport } from "@/services/report-service";
+import { DuplicateResolution } from "@/types/resolution";
 
 export interface WorkspaceContextValue
   extends WorkspaceState {
@@ -27,6 +28,10 @@ export interface WorkspaceContextValue
   uploadClient: (
     file: File
   ) => Promise<void>;
+
+  resolveDuplicate: (
+    resolution: DuplicateResolution
+  ) => void;
 
   runMatching: () => Promise<void>;
 
@@ -57,6 +62,11 @@ export function WorkspaceProvider({
 
   const [matchingResult, setMatchingResult] =
     useState<MatchingResult | null>(null);
+
+  const [
+    duplicateResolutions,
+    setDuplicateResolutions,
+  ] = useState<DuplicateResolution[]>([]);
 
   const [uploadStage, setUploadStage] =
     useState<UploadStage>("idle");
@@ -163,6 +173,35 @@ export function WorkspaceProvider({
         result.summary
       );
 
+      // We need the summary immediately for runMatching()
+      const summary = result.summary;
+
+      setClientSummary(summary);
+
+      // Run matching immediately after client upload
+      if (allocationIndex) {
+
+        const response =
+          await processMatching(
+            allocationIndex,
+            summary,
+            (progress) => {
+
+              setUploadStage(progress.stage);
+
+              setUploadMessage(progress.message);
+
+              setUploadProgress(progress.progress);
+
+            }
+          );
+
+        setMatchingResult(response.result);
+
+        console.log(response.result);
+
+      }
+
       await new Promise(
         (resolve) =>
           setTimeout(resolve, 800)
@@ -222,21 +261,27 @@ export function WorkspaceProvider({
       response.result
     );
 
-    // const report =
-    //   generateReport(response.result);
+    const report =
+      generateReport(response.result);
 
-    // console.log("========== REPORT ==========");
+    console.log("========== REPORT ==========");
 
-    // console.table(report);
+    console.table(report);
 
-    // // log to Console
-    // console.log("========== MATCHING ==========");
+    // log to Console
+    console.log("========== MATCHING ==========");
 
-    // console.log(response.result);
+    console.log(response.result);
 
-    // console.table(response.result.matched);
+    console.table(response.result.matched);
 
-    // console.table(response.result.unmatched);
+    console.table(response.result.unmatched);
+
+    console.log(response.result);
+    console.log(
+      "Duplicate Matches:",
+      response.result.duplicateMatches
+    );
 
     await new Promise(
       (resolve) =>
@@ -245,45 +290,69 @@ export function WorkspaceProvider({
 
     setUploadStage("idle");
 
-  } finally {
+    } finally {
 
-    setIsBusy(false);
+      setIsBusy(false);
 
-  }
-
-}
-
-  function resetWorkspace() {
-
-    setAllocationSummary(null);
-
-    setAllocationPreview(null);
-
-    setAllocationIndex(null);
-
-    setClientSummary(null);
-
-    setMatchingResult(null);
-
-    setUploadStage("idle");
-
-    setIsBusy(false);
-
-    setUploadMessage("");
-
-    setUploadProgress(0);
+    }
 
   }
+
+    function resolveDuplicate(
+      resolution: DuplicateResolution
+    ) {
+
+      setDuplicateResolutions((previous) => {
+
+        const filtered = previous.filter(
+          (item) =>
+            item.client.name !== resolution.client.name
+        );
+
+        return [
+          ...filtered,
+          resolution,
+        ];
+
+      });
+
+    }
+
+    function resetWorkspace() {
+
+      setAllocationSummary(null);
+
+      setAllocationPreview(null);
+
+      setAllocationIndex(null);
+
+      setClientSummary(null);
+
+      setMatchingResult(null);
+
+      setDuplicateResolutions([]);
+
+      setUploadStage("idle");
+
+      setIsBusy(false);
+
+      setUploadMessage("");
+
+      setUploadProgress(0);
+
+    }
 
   return (
 
     <WorkspaceContext.Provider
-        value={{
+      value={{
         allocationSummary,
         allocationPreview,
         allocationIndex,
         clientSummary,
         matchingResult,
+
+        duplicateResolutions,
 
         uploadStage,
         uploadMessage,
@@ -293,9 +362,13 @@ export function WorkspaceProvider({
 
         uploadAllocation,
         uploadClient,
+
+        resolveDuplicate,
+
         runMatching,
+
         resetWorkspace,
-        }}
+      }}
     >
 
       {children}

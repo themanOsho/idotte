@@ -1,14 +1,14 @@
-Next milestone
-
-Once this compiles, I'd move to src/services/report-service.ts.
-
-That service will eventually generate:
-
-Placement Report
-Duplicate Candidates Report
-Unmatched Candidates Report
-Statistics Report
-Excel export
-PDF export
-
-By keeping all report g
+Workflow now:
+Client
+   │
+   ▼
+Normalize Name
+   │
+   ▼
+Allocation Index Lookup
+   │
+   ├── 0 matches ─────► Unmatched
+   │
+   ├── 1 match ───────► Matched
+   │
+   └── 2+ matches ────► Duplicate Resolution

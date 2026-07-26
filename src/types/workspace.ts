@@ -4,6 +4,7 @@ import { AllocationIndexResult } from "@/engine/allocation/indexer";
 import { ClientWorkbookSummary } from "./client";
 import { MatchingResult } from "./matching";
 import { UploadStage } from "./upload";
+import { DuplicateResolution } from "./resolution";
 
 export interface WorkspaceState {
   allocationSummary: AllocationWorkbookSummary | null;
@@ -15,6 +16,8 @@ export interface WorkspaceState {
   clientSummary: ClientWorkbookSummary | null;
 
   matchingResult: MatchingResult | null;
+
+  duplicateResolutions: DuplicateResolution[];
 
   uploadStage: UploadStage;
 

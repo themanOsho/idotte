@@ -300,3 +300,14 @@ An "Unmatched Clients" section.
 Filters and export actions.
 
 That will be the first screen where Idotte starts to feel like a polished, production-grade application rather than just a data-processing tool.
+
+
+I would pause adding new services and build the UI around what we've already created.
+
+The next implementation order I'd follow is:
+
+✅ Add a Client List Upload card below the Workbook Summary.
+✅ Build the Client Workbook Preview (same style as Allocation).
+✅ Show a large Run Matching button once both files are uploaded.
+✅ Build the Matching Results Dashboard.
+✅ Add Export Reports.
