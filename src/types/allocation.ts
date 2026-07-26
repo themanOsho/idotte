@@ -15,7 +15,6 @@ export type AllocationIndex = Map<
   AllocationRecord[]
 >;
 
-
 /**
  * Parsed worksheet.
  */
@@ -30,6 +29,14 @@ export interface AllocationWorksheet {
  */
 export interface AllocationWorkbookSummary {
   sheetCount: number;
+
   totalRecords: number;
+
+  uniqueCandidates: number;
+
+  duplicateRecords: number;
+
+  namesWithDuplicates: number;
+
   worksheets: AllocationWorksheet[];
 }

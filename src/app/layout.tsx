@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { siteConfig } from "@/config/site";
+import { WorkspaceProvider } from "@/context/workspace-provider";
 
 export const metadata: Metadata = {
   title: {
@@ -29,7 +30,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <WorkspaceProvider>
+            {children}
+          </WorkspaceProvider>
         </ThemeProvider>
       </body>
     </html>

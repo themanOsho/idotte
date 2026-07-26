@@ -13,7 +13,7 @@ export type AllocationIndex = Map<
 export interface AllocationIndexResult {
   index: AllocationIndex;
 
-  uniqueCandidates: number;
+  uniqueNames: number;
 
   duplicateRecords: number;
 
@@ -56,32 +56,24 @@ export function buildAllocationIndex(
 
   }
 
-    let duplicateRecords = 0;
+let duplicateRecords = 0;
+let namesWithDuplicates = 0;
 
-    let namesWithDuplicates = 0;
+for (const records of index.values()) {
+  if (records.length > 1) {
+    namesWithDuplicates++;
+    duplicateRecords += records.length - 1;
+  }
+}
 
-    for (const matches of index.values()) {
+return {
+  index,
 
-    if (matches.length > 1) {
+  uniqueNames: index.size,
 
-        namesWithDuplicates++;
+  duplicateRecords,
 
-        duplicateRecords += matches.length - 1;
-
-    }
-
-    }
-
-    return {
-
-    index,
-
-    uniqueCandidates: index.size,
-
-    duplicateRecords,
-
-    namesWithDuplicates,
-
-    };
+  namesWithDuplicates,
+};
 
 }

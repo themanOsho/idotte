@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Loader2,
-  CheckCircle2,
-} from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface UploadProgressModalProps {
   open: boolean;
@@ -18,15 +15,32 @@ export function UploadProgressModal({
   progress,
   complete,
 }: UploadProgressModalProps) {
+  const [visible, setVisible] = useState(open);
+
+  useEffect(() => {
+    if (open) {
+      setVisible(true);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setVisible(false);
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [open]);
+
+  if (!visible) return null;
+
   return (
     <div
       className={`
         fixed inset-0 z-50 flex items-center justify-center
         bg-black/60 backdrop-blur-sm
-        transition-all duration-300
+        transition-opacity duration-300
         ${
           open
-            ? "pointer-events-auto opacity-100"
+            ? "opacity-100"
             : "pointer-events-none opacity-0"
         }
       `}
@@ -39,46 +53,34 @@ export function UploadProgressModal({
           ${
             open
               ? "translate-y-0 scale-100"
-              : "translate-y-4 scale-95"
+              : "translate-y-3 scale-95"
           }
         `}
       >
-        <div className="flex flex-col items-center text-center">
+        <div className="space-y-6">
 
-          {/* Icon */}
-          <div className="mb-6">
+          <div className="text-center">
+            <h2 className="text-xl font-semibold tracking-tight">
+              {complete ? "Completed" : title}
+            </h2>
 
-            {complete ? (
-              <CheckCircle2 className="h-14 w-14 text-primary" />
-            ) : (
-              <Loader2 className="h-14 w-14 animate-spin text-primary" />
-            )}
-
+            <p className="mt-2 text-sm text-muted-foreground">
+              {complete
+                ? "Allocation dataset processed successfully."
+                : "Please wait while Idotte processes your workbook."}
+            </p>
           </div>
 
-          {/* Title */}
-          <h2 className="text-xl font-semibold tracking-tight">
-            {complete ? "Completed" : title}
-          </h2>
-
-          {/* Description */}
-          <p className="mt-2 text-sm text-muted-foreground">
-            {complete
-              ? "Allocation dataset processed successfully."
-              : "Please wait while Idotte processes your workbook."}
-          </p>
-
-          {/* Progress */}
-          <div className="mt-8 w-full">
+          <div>
 
             <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
-              <span>Progress</span>
+              <span>Status</span>
               <span>{progress}%</span>
             </div>
 
             <div className="h-2 overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full rounded-full bg-primary transition-all duration-300 ease-out"
+                className="h-full rounded-full bg-primary transition-all duration-300"
                 style={{
                   width: `${progress}%`,
                 }}

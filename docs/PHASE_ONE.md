@@ -260,3 +260,18 @@ After upload completes, instead of the page ending at "Workbook Imported", I'd t
 4 ○ Generate Report
 
 This stepper would make users immediately understand where they are in the process and what comes next, which is especially valuable as Idotte evolves beyond a single upload screen. It also aligns well with the phased workflow you've described for generating placement reports.
+
+### Next milestone
+
+The next major milestone is **Client List Upload**.
+
+We'll build support for:
+
+* Uploading a client Excel file.
+* Uploading scanned/PDF client lists.
+* OCR extraction for scanned documents.
+* Manual field mapping (when column names differ).
+* Client workbook preview (matching the allocation preview).
+* Client indexing engine.
+
+Once both datasets are indexed, we'll move on to the core of Idotte: the **Matching Engine**, which will generate placement reports automatically from allocation data and client lists.

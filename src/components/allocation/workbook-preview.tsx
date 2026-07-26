@@ -107,7 +107,7 @@ export function WorkbookPreview({
 
             <div
               key={sheet.name}
-              className="flex items-center justify-between border-b border-border/50 px-6 py-4 last:border-0"
+              className="flex items-center justify-between border-b border-border/50 px-6 py-4 transition-colors hover:bg-primary/5 last:border-0"
             >
 
               <div>
@@ -122,7 +122,7 @@ export function WorkbookPreview({
 
               </div>
 
-              <div className="rounded-xl bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+              <div className="rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
 
                 {sheet.rowCount.toLocaleString()}
 
@@ -150,7 +150,7 @@ function StatCard({
   value: number;
 }) {
   return (
-    <div className="rounded-3xl border border-border bg-card/60 p-5 backdrop-blur-xl transition-all duration-300 hover:border-primary/30 hover:bg-card">
+    <div className="rounded-3xl border border-border bg-card/60 p-5 backdrop-blur-xl shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/10">
 
       <div className="flex items-center justify-between">
 
