@@ -10,6 +10,12 @@ export interface AllocationRecord {
   centreName: string;
 }
 
+export type AllocationIndex = Map<
+  string,
+  AllocationRecord[]
+>;
+
+
 /**
  * Parsed worksheet.
  */
@@ -24,5 +30,6 @@ export interface AllocationWorksheet {
  */
 export interface AllocationWorkbookSummary {
   sheetCount: number;
+  totalRecords: number;
   worksheets: AllocationWorksheet[];
 }

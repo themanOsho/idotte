@@ -36,7 +36,7 @@ export function AllocationUpload({
         onChange={handleFileChange}
       />
 
-      <Button size="lg" onClick={handleChooseFile}>
+      <Button size="lg" className="cursor-pointer" onClick={handleChooseFile}>
         Choose Excel File
       </Button>
     </>

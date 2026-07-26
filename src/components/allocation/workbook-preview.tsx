@@ -1,7 +1,23 @@
+import {
+  FileSpreadsheet,
+  Files,
+  Users,
+  Copy,
+  AlertTriangle,
+} from "lucide-react";
+
 interface WorkbookPreviewProps {
   fileName: string;
+
   sheetCount: number;
+
   totalRecords: number;
+
+  uniqueCandidates: number;
+
+  duplicateRecords: number;
+
+  namesWithDuplicates: number;
 
   worksheets: {
     name: string;
@@ -13,55 +29,149 @@ export function WorkbookPreview({
   fileName,
   sheetCount,
   totalRecords,
+  uniqueCandidates,
+  duplicateRecords,
+  namesWithDuplicates,
   worksheets,
 }: WorkbookPreviewProps) {
   return (
-    <div className="mt-8 rounded-2xl border border-border bg-card p-6">
-      <h3 className="text-lg font-semibold">
-        Workbook Summary
-      </h3>
+    <section className="space-y-8">
 
-      <div className="mt-4 space-y-2 text-sm text-muted-foreground">
-        <p>
-          <strong>File:</strong> {fileName}
-        </p>
+      <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-xl p-6">
 
-        <p>
-          <strong>Worksheets:</strong> {sheetCount}
-        </p>
+        <div className="flex items-center gap-3">
 
-        <p>
-          <strong>Total Records:</strong> {totalRecords}
-        </p>
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+            <FileSpreadsheet className="h-6 w-6 text-primary" />
+          </div>
+
+          <div>
+
+            <h2 className="text-xl font-semibold">
+              Workbook Imported
+            </h2>
+
+            <p className="text-sm text-muted-foreground">
+              {fileName}
+            </p>
+
+          </div>
+
+        </div>
+
       </div>
 
-      <div className="mt-6 overflow-hidden rounded-xl border">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-muted">
-            <tr>
-              <th className="px-4 py-3">Worksheet</th>
-              <th className="px-4 py-3">Records</th>
-            </tr>
-          </thead>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
 
-          <tbody>
-            {worksheets.map((sheet) => (
-              <tr
-                key={sheet.name}
-                className="border-t"
-              >
-                <td className="px-4 py-3">
+        <StatCard
+          icon={<Users className="h-5 w-5" />}
+          label="Total Records"
+          value={totalRecords}
+        />
+
+        <StatCard
+          icon={<Users className="h-5 w-5" />}
+          label="Unique Candidates"
+          value={uniqueCandidates}
+        />
+
+        <StatCard
+          icon={<Copy className="h-5 w-5" />}
+          label="Duplicate Records"
+          value={duplicateRecords}
+        />
+
+        <StatCard
+          icon={<AlertTriangle className="h-5 w-5" />}
+          label="Names with Duplicates"
+          value={namesWithDuplicates}
+        />
+
+      </div>
+
+      <div className="rounded-3xl border border-border bg-card/60 backdrop-blur-xl overflow-hidden">
+
+        <div className="flex items-center gap-2 border-b border-border px-6 py-5">
+
+          <Files className="h-5 w-5 text-primary" />
+
+          <h3 className="font-semibold">
+            Worksheets
+          </h3>
+
+        </div>
+
+        <div>
+
+          {worksheets.map((sheet) => (
+
+            <div
+              key={sheet.name}
+              className="flex items-center justify-between border-b border-border/50 px-6 py-4 last:border-0"
+            >
+
+              <div>
+
+                <p className="font-medium">
                   {sheet.name}
-                </td>
+                </p>
 
-                <td className="px-4 py-3">
-                  {sheet.rowCount.toLocaleString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                <p className="text-xs text-muted-foreground">
+                  Worksheet
+                </p>
+
+              </div>
+
+              <div className="rounded-xl bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">
+
+                {sheet.rowCount.toLocaleString()}
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
       </div>
+
+    </section>
+  );
+}
+
+function StatCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="rounded-3xl border border-border bg-card/60 p-5 backdrop-blur-xl transition-all duration-300 hover:border-primary/30 hover:bg-card">
+
+      <div className="flex items-center justify-between">
+
+        <div className="rounded-xl bg-primary/10 p-2 text-primary">
+          {icon}
+        </div>
+
+      </div>
+
+      <p className="mt-6 text-3xl font-bold tracking-tight">
+
+        {value.toLocaleString()}
+
+      </p>
+
+      <p className="mt-1 text-sm text-muted-foreground">
+
+        {label}
+
+      </p>
+
     </div>
   );
 }

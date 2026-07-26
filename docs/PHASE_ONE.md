@@ -1,22 +1,14 @@
-Phase 1 Roadmap (MVP)
+# Phase 1 Roadmap (MVP)
 
-Now comes the important part.
 
-Remember our mission:
-
-Help your aunt generate placement reports for each client in minutes.
-
-Nothing else matters until this works.
-
-🎯 Phase 1 Goal
+## Goal
 
 Upload Allocation List + Upload Client List → Generate Report PDF
 
 If we achieve that, we've solved the real-world problem.
 
-Milestone 1 — Foundation ✅
+### Milestone 1 — Foundation ✅
 
-Status: In Progress
 
  Initialize project
  Configure TypeScript
@@ -27,7 +19,8 @@ Status: In Progress
  Build landing page
  Project branding
  Logo
-Milestone 2 — Allocation Engine
+
+### Milestone 2 — Allocation Engine
 
 This becomes the application's backbone.
 
@@ -45,11 +38,12 @@ Display allocation summary
 Output:
 
 AllocationRecord[]
-Milestone 3 — Client Parser
+
+### Milestone 3 — Client Parser
 
 Support both workflows.
 
-Excel
+#### Excel
 
 Upload
 
@@ -61,7 +55,7 @@ Read workbook
 
 Extract candidate names
 
-PDF
+#### PDF
 
 Upload scanned PDF
 
@@ -84,7 +78,8 @@ Normalize
 Output
 
 ClientCandidate[]
-Milestone 4 — Matching Engine
+
+### Milestone 4 — Matching Engine
 
 Pipeline
 
@@ -236,3 +231,32 @@ Allocation Index
         │
         ▼
 Ready ✔
+
+
+NEXTTTT - ✅ Milestone 2 — Client Upload Engine
+Uploading workbook...
+
+Parsing workbook...
+
+Running OCR...
+
+Matching candidates...
+
+Generating PDF...
+
+Done.
+
+I'd make one more enhancement next
+
+After upload completes, instead of the page ending at "Workbook Imported", I'd turn the entire flow into a pipeline:
+
+✓ Allocation Imported
+
+──────────────
+
+1 ✓ Allocation Dataset
+2 ○ Client List
+3 ○ Matching
+4 ○ Generate Report
+
+This stepper would make users immediately understand where they are in the process and what comes next, which is especially valuable as Idotte evolves beyond a single upload screen. It also aligns well with the phased workflow you've described for generating placement reports.
