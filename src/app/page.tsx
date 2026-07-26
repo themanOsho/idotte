@@ -43,7 +43,7 @@ export default function HomePage() {
 
           </h1>
 
-          <p className="page-description max-w-xl mx-auto">
+          <p className="page-description max-w-md mx-auto">
 
             Generate examination placement reports from allocation datasets and client lists in minutes.
 

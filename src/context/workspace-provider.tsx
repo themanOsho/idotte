@@ -8,12 +8,15 @@ import {
 } from "react";
 
 import { WorkspaceState } from "@/types/workspace";
-import { AllocationIndexResult, buildAllocationIndex } from "@/engine/allocation/indexer";
-import { parseAllocationWorkbook } from "@/engine/allocation/parser";
+import { AllocationIndexResult } from "@/engine/allocation/indexer";
+import { processAllocationWorkbook } from "@/services/allocation-service";
 import { WorkbookPreview } from "@/types/preview";
 import { MatchingResult } from "@/types/matching";
 import { ClientWorkbookSummary } from "@/types/client";
 import { UploadStage } from "@/types/upload";
+import { processClientWorkbook } from "@/services/client-service";
+import { processMatching } from "@/services/matching-service";
+import { generateReport } from "@/services/report-service";
 
 export interface WorkspaceContextValue
   extends WorkspaceState {
@@ -24,6 +27,8 @@ export interface WorkspaceContextValue
   uploadClient: (
     file: File
   ) => Promise<void>;
+
+  runMatching: () => Promise<void>;
 
   resetWorkspace: () => void;
 }
@@ -73,48 +78,37 @@ export function WorkspaceProvider({
 
       setIsBusy(true);
 
-      setUploadStage("reading");
-      setUploadMessage("Reading workbook...");
-      setUploadProgress(10);
+    const result =
+      await processAllocationWorkbook(
+        file,
+        (progress) => {
 
-      const summary =
-        await parseAllocationWorkbook(file);
+          setUploadStage(
+            progress.stage
+          );
 
-      setAllocationSummary(summary);
+          setUploadMessage(
+            progress.message
+          );
 
-      setUploadStage("indexing");
-      setUploadMessage("Building allocation index...");
-      setUploadProgress(75);
+          setUploadProgress(
+            progress.progress
+          );
 
-        const index =
-        buildAllocationIndex(
-            summary.worksheets.flatMap(
-            (sheet) => sheet.records
-            )
-        );
+        }
+      );
 
-      setAllocationIndex(index);
+      setAllocationSummary(
+        result.summary
+      );
 
-    setAllocationPreview({
-        fileName: file.name,
-        sheetCount: summary.sheetCount,
-        totalRecords: summary.totalRecords,
+      setAllocationIndex(
+        result.index
+      );
 
-        uniqueCandidates: index.uniqueNames,
-
-        duplicateRecords: index.duplicateRecords,
-
-        namesWithDuplicates: index.namesWithDuplicates,
-
-        worksheets: summary.worksheets.map((sheet) => ({
-            name: sheet.name,
-            rowCount: sheet.rowCount,
-        })),
-    });
-
-    setUploadStage("complete");
-    setUploadMessage("Upload completed.");
-    setUploadProgress(100);
+      setAllocationPreview(
+        result.preview
+      );
 
     // Keep the success state visible briefly.
     await new Promise((resolve) =>
@@ -141,13 +135,123 @@ export function WorkspaceProvider({
     file: File
   ) {
 
-    console.log(file);
+    try {
 
-    /**
-     * We'll implement this next.
-     */
+      setIsBusy(true);
+
+      const result =
+        await processClientWorkbook(
+          file,
+          (progress) => {
+
+            setUploadStage(
+              progress.stage
+            );
+
+            setUploadMessage(
+              progress.message
+            );
+
+            setUploadProgress(
+              progress.progress
+            );
+
+          }
+        );
+
+      setClientSummary(
+        result.summary
+      );
+
+      await new Promise(
+        (resolve) =>
+          setTimeout(resolve, 800)
+      );
+
+      setUploadStage("idle");
+
+    } catch (error) {
+
+      console.error(error);
+
+      setUploadStage("error");
+
+    } finally {
+
+      setIsBusy(false);
+
+    }
 
   }
+
+  async function runMatching() {
+
+  if (
+    !allocationIndex ||
+    !clientSummary
+  ) {
+    return;
+  }
+
+  try {
+
+    setIsBusy(true);
+
+    const response =
+      await processMatching(
+        allocationIndex,
+        clientSummary,
+        (progress) => {
+
+          setUploadStage(
+            progress.stage
+          );
+
+          setUploadMessage(
+            progress.message
+          );
+
+          setUploadProgress(
+            progress.progress
+          );
+
+        }
+      );
+
+    setMatchingResult(
+      response.result
+    );
+
+    // const report =
+    //   generateReport(response.result);
+
+    // console.log("========== REPORT ==========");
+
+    // console.table(report);
+
+    // // log to Console
+    // console.log("========== MATCHING ==========");
+
+    // console.log(response.result);
+
+    // console.table(response.result.matched);
+
+    // console.table(response.result.unmatched);
+
+    await new Promise(
+      (resolve) =>
+        setTimeout(resolve, 800)
+    );
+
+    setUploadStage("idle");
+
+  } finally {
+
+    setIsBusy(false);
+
+  }
+
+}
 
   function resetWorkspace() {
 
@@ -189,6 +293,7 @@ export function WorkspaceProvider({
 
         uploadAllocation,
         uploadClient,
+        runMatching,
         resetWorkspace,
         }}
     >

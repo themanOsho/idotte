@@ -3,5 +3,6 @@ export type UploadStage =
   | "reading"
   | "parsing"
   | "indexing"
+  | "matching"
   | "complete"
   | "error";

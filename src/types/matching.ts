@@ -3,7 +3,8 @@ import { ClientRecord } from "./client";
 
 export interface MatchedRecord {
   client: ClientRecord;
-  allocation: AllocationRecord;
+
+  allocations: AllocationRecord[];
 }
 
 export interface UnmatchedRecord {
@@ -12,9 +13,12 @@ export interface UnmatchedRecord {
 
 export interface MatchingResult {
   matched: MatchedRecord[];
+
   unmatched: UnmatchedRecord[];
 
   totalClientRecords: number;
+
   matchedCount: number;
+
   unmatchedCount: number;
 }

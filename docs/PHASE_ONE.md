@@ -275,3 +275,28 @@ We'll build support for:
 * Client indexing engine.
 
 Once both datasets are indexed, we'll move on to the core of Idotte: the **Matching Engine**, which will generate placement reports automatically from allocation data and client lists.
+
+Report Service
+
+├── Statistics
+├── Excel Export
+├── PDF Export
+├── CSV Export
+├── Placement Report
+├── Duplicate Report
+├── Unmatched Report
+├── Audit Report
+├── Centre Summary
+├── School Summary
+├── LED Summary
+└── Candidate History
+
+The next milestone I'd recommend is the Matching Results Dashboard, where users can immediately see:
+
+A summary row with Matched, Ambiguous, Unmatched, and Match Rate.
+A searchable table of matched candidates.
+An "Ambiguous Matches" section that lists candidates with multiple allocation records.
+An "Unmatched Clients" section.
+Filters and export actions.
+
+That will be the first screen where Idotte starts to feel like a polished, production-grade application rather than just a data-processing tool.

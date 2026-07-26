@@ -1,125 +1,14 @@
-types/allocation.ts
-/**
- * A single candidate extracted from the official
- * Allocation workbook.
- */
-export interface AllocationRecord {
-  candidateId: string;
-  fullName: string;
-  ledName: string;
-  schoolName: string;
-  centreName: string;
-}
+Next milestone
 
-export type AllocationIndex = Map<
-  string,
-  AllocationRecord[]
->;
+Once this compiles, I'd move to src/services/report-service.ts.
 
+That service will eventually generate:
 
-/**
- * Parsed worksheet.
- */
-export interface AllocationWorksheet {
-  name: string;
-  rowCount: number;
-  records: AllocationRecord[];
-}
+Placement Report
+Duplicate Candidates Report
+Unmatched Candidates Report
+Statistics Report
+Excel export
+PDF export
 
-/**
- * Parsed allocation workbook.
- */
-export interface AllocationWorkbookSummary {
-  sheetCount: number;
-  totalRecords: number;
-  worksheets: AllocationWorksheet[];
-}
-types/client.ts
-export interface ClientRecord {
-  name: string;
-}
-
-export interface ClientWorksheet {
-  name: string;
-  rowCount: number;
-  records: ClientRecord[];
-}
-
-export interface ClientWorkbookSummary {
-  sheetCount: number;
-  totalRecords: number;
-
-  worksheets: ClientWorksheet[];
-}
-types/preview.ts
-export interface WorkbookPreview {
-
-  fileName: string;
-
-  sheetCount: number;
-
-  totalRecords: number;
-
-  uniqueCandidates: number;
-
-  duplicateRecords: number;
-
-  namesWithDuplicates: number;
-
-  worksheets: {
-
-    name: string;
-
-    rowCount: number;
-
-  }[];
-
-}
-types/matching.ts
-import { AllocationRecord } from "./allocation";
-import { ClientRecord } from "./client";
-
-export interface MatchedRecord {
-  client: ClientRecord;
-  allocation: AllocationRecord;
-}
-
-export interface UnmatchedRecord {
-  client: ClientRecord;
-}
-
-export interface MatchingResult {
-  matched: MatchedRecord[];
-  unmatched: UnmatchedRecord[];
-
-  totalClientRecords: number;
-  matchedCount: number;
-  unmatchedCount: number;
-}
-types/workspace.ts
-import { AllocationWorkbookSummary } from "./allocation";
-import { WorkbookPreview } from "./preview";
-import { AllocationIndexResult } from "@/engine/allocation/indexer";
-import { ClientWorkbookSummary } from "./client";
-import { MatchingResult } from "./matching";
-import { UploadStage } from "./upload";
-
-export interface WorkspaceState {
-  allocationSummary: AllocationWorkbookSummary | null;
-
-  allocationPreview: WorkbookPreview | null;
-
-  allocationIndex: AllocationIndexResult | null;
-
-  clientSummary: ClientWorkbookSummary | null;
-
-  matchingResult: MatchingResult | null;
-
-  uploadStage: UploadStage;
-
-  uploadMessage: string;
-
-  uploadProgress: number;
-
-  isBusy: boolean;
-}
+By keeping all report g
