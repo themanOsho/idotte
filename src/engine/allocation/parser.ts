@@ -4,9 +4,12 @@ import { ALLOCATION_HEADERS } from "./constants";
 
 import {
   AllocationRecord,
-  AllocationWorkbookSummary,
   AllocationWorksheet,
 } from "@/types/allocation";
+
+import {
+  ParsedAllocationWorkbook,
+} from "@/types/parsed-workbook";
 
 export interface AllocationParserProgress {
   stage: "reading" | "parsing";
@@ -23,7 +26,7 @@ export async function parseAllocationWorkbook(
   onProgress?: (
     progress: AllocationParserProgress
   ) => void
-): Promise<AllocationWorkbookSummary> {
+): Promise<ParsedAllocationWorkbook> {
 
   onProgress?.({
     stage: "reading",

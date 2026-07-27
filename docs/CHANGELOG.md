@@ -2,107 +2,90 @@
 
 ## [Unreleased]
 
-### What we've completed
+feat: implement client upload workflow and matching services
 
-At this point, we've completed a solid foundation for **Milestone 1: Allocation Upload & Parsing**. The app has evolved from a landing page into the first working version of Idotte's processing engine.
+- Introduced application service layer
+  - allocation-service
+  - client-service
+  - matching-service
+  - report-service
 
-#### 🎨 Foundation & UI
+- Refactored allocation upload into service-based workflow
 
-* Set up the Idotte landing page with a premium dark UI inspired by Linear/Vercel.
-* Introduced the Lagos State-inspired emerald brand palette.
-* Added responsive layout utilities and reusable design classes.
-* Enabled dark mode throughout the application.
+- Implemented client workbook parsing service
 
-#### 📤 Allocation Upload
+- Added workbook and client summaries to workspace state
 
-* Built the `AllocationUpload` component.
-* Users can upload an allocation Excel workbook.
-* File selection is displayed immediately after upload.
+- Introduced matching engine service integration
 
-#### 📖 Allocation Parser
+- Added report generation service
 
-* Implemented `parseAllocationWorkbook()`.
-* Supports Excel workbooks with one or more worksheets.
-* Dynamically discovers required columns using header names instead of hard-coded column indexes.
-* Validates required headers before processing.
-* Parses every candidate into the internal `AllocationRecord` model.
-* Produces an `AllocationWorkbookSummary`.
+- Refactored matching engine to return all allocation records for duplicate names
 
-#### ⚙️ Allocation Index Engine
+- Added duplicate match tracking to MatchingResult
 
-* Built a fast in-memory lookup index.
-* Candidate names are normalized before indexing.
-* Supports duplicate candidate names by storing multiple records per key.
-* Added progress callback support for future UI updates.
+- Added duplicate resolution state and actions to WorkspaceProvider
 
-#### 📊 Workbook Analytics
+- Implemented workspace overview after successful uploads
 
-The parser and indexer now generate meaningful statistics:
+- Replaced allocation preview workflow with upload progression
 
-* Total Records
-* Worksheets
-* Unique Candidates
-* Duplicate Records
-* Names With Duplicates
+- Added reusable FileUploadCard component
 
-Duplicate statistics were corrected to reflect true duplicate rows instead of over-counting repeated names.
+- Unified allocation and client upload UI
 
-#### 📈 Workbook Preview
+- Added premium workbook statistics dashboard
+  - Total Records
+  - Unique Candidates
+  - Duplicate Records
+  - Names With Duplicates
 
-Replaced the original text summary with a dashboard-style preview.
+- Improved upload progress modal
+  - auto-dismiss
+  - simplified UI
+  - progress-driven workflow
 
-Features include:
+- Introduced matching results dashboard foundation
 
-* Workbook information
-* Responsive statistics cards
-* Worksheet summary table
-* Thousands separators using `toLocaleString()`
-* Mobile-friendly responsive layout
+- Added duplicate resolution components
 
-#### 🔄 Upload Progress
+- Refactored project toward service-oriented architecture
 
-Introduced upload progress stages:
+Current Progress
 
-* Reading workbook
-* Parsing workbook
-* Building index
-* Complete
-* Error handling
-
-The parser and indexer now expose progress callbacks, laying the groundwork for richer progress reporting.
-
-#### 🧱 Architecture Improvements
-
-* Introduced `ALLOCATION_HEADERS` constants to avoid string literals.
-* Separated responsibilities between parsing and indexing.
-* Added dedicated TypeScript types for allocation parsing, workbook previews, upload stages, and indexing.
-
----
-
-## Current project status
-
-✅ Landing Page
+At this point, Idotte has a solid architecture:
 
 ✅ Allocation Upload
-
-✅ Excel Parsing Engine
-
-✅ Workbook Validation
-
+✅ Allocation Parser
 ✅ Allocation Index
+✅ Client Upload
+✅ Client Parser
+✅ Matching Engine
+✅ Matching Service
+✅ Report Service
+✅ Workspace Provider
+✅ Upload Workflow
+✅ Matching Results Dashboard
+✅ Duplicate Resolution foundation
+✅ Service Layer
+✅ Workspace Overview
 
-✅ Workbook Analytics
 
-✅ Responsive Workbook Dashboard
+refactor: separate parsing, matching and workspace pipeline
 
-🟡 Client Upload (Next)
-
-⬜ OCR Engine
-
-⬜ Matching Engine
-
-⬜ Report Generator
-
-⬜ PDF Export
-
----
+- Introduced ParsedAllocationWorkbook to separate parsing from business logic
+- Refactored allocation parser to return raw parsed workbook only
+- Moved workbook enrichment into allocation-service
+- Centralized duplicate statistics generation in the service layer
+- Refactored matching engine to distinguish:
+  - matched records
+  - duplicate matches
+  - unmatched records
+- Added DuplicateMatch model to support manual duplicate resolution
+- Updated MatchingResult with:
+  - duplicateMatches
+  - duplicateCount
+  - matchRate
+- Refactored report generation to use duplicate match statistics
+- Improved separation of responsibilities across parser, indexer and services
+- Continued aligning the architecture for the Duplicate Resolution workflow

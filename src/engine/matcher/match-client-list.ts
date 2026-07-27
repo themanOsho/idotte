@@ -8,6 +8,7 @@ import {
   MatchingResult,
   MatchedRecord,
   UnmatchedRecord,
+  DuplicateMatch,
 } from "@/types/matching";
 
 import { normalizeCandidateName } from "@/utils/normalize-candidate-name";
@@ -22,6 +23,8 @@ export function matchClientList(
 ): MatchingResult {
 
   const matched: MatchedRecord[] = [];
+
+  const duplicateMatches: DuplicateMatch[] = [];
 
   const unmatched: UnmatchedRecord[] = [];
 
@@ -41,35 +44,74 @@ export function matchClientList(
       });
 
       continue;
+
     }
 
-    /**
-     * Duplicate names are expected.
-     * Return every matching allocation record.
-     */
-    for (const allocation of allocationMatches) {
+    if (allocationMatches.length === 1) {
 
       matched.push({
 
         client,
 
-        allocation,
+        allocation: allocationMatches[0],
 
       });
 
+      continue;
+
     }
+
+    duplicateMatches.push({
+
+      client,
+
+      allocations: allocationMatches,
+
+    });
 
   }
 
+  const totalClientRecords =
+    clientRecords.length;
+
+  const matchedCount =
+    matched.length;
+
+  const unmatchedCount =
+    unmatched.length;
+
+  const duplicateCount =
+    duplicateMatches.length;
+
+  const matchRate =
+    totalClientRecords === 0
+      ? 0
+      : Number(
+          (
+            ((matchedCount + duplicateCount) /
+              totalClientRecords) *
+            100
+          ).toFixed(2)
+        );
+
   return {
+
     matched,
+
     unmatched,
 
-    totalClientRecords: clientRecords.length,
+    duplicateMatches,
 
-    matchedCount: matched.length,
+    totalClientRecords,
 
-    unmatchedCount: unmatched.length,
-    };
+    matchedCount,
 
+    unmatchedCount,
+
+    duplicateCount,
+
+    matchRate,
+
+  };
+ 
 }

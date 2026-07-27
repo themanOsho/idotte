@@ -44,7 +44,7 @@ export async function processAllocationWorkbook(
     progress: 10,
   });
 
-  const summary =
+  const parsedWorkbook =
     await parseAllocationWorkbook(file);
 
   onProgress?.({
@@ -55,18 +55,22 @@ export async function processAllocationWorkbook(
 
   const index =
     buildAllocationIndex(
-      summary.worksheets.flatMap(
+      parsedWorkbook.worksheets.flatMap(
         (sheet) => sheet.records
       )
     );
 
-  const preview: WorkbookPreview = {
+  /**
+   * Enrich the parsed workbook with
+   * business-specific statistics.
+   */
+  const summary: AllocationWorkbookSummary = {
 
-    fileName: file.name,
+    sheetCount:
+      parsedWorkbook.sheetCount,
 
-    sheetCount: summary.sheetCount,
-
-    totalRecords: summary.totalRecords,
+    totalRecords:
+      parsedWorkbook.totalRecords,
 
     uniqueCandidates:
       index.uniqueNames,
@@ -76,6 +80,25 @@ export async function processAllocationWorkbook(
 
     namesWithDuplicates:
       index.namesWithDuplicates,
+
+    worksheets:
+      parsedWorkbook.worksheets,
+
+  };
+
+  const preview: WorkbookPreview = {
+
+    fileName: file.name,
+
+    sheetCount: summary.sheetCount,
+
+    totalRecords: summary.totalRecords,
+
+    uniqueCandidates: summary.uniqueCandidates,
+
+    duplicateRecords: summary.duplicateRecords,
+
+    namesWithDuplicates: summary.namesWithDuplicates,
 
     worksheets:
       summary.worksheets.map(

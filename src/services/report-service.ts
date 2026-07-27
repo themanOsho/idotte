@@ -16,17 +16,14 @@ export interface ReportSummary {
 
 /**
  * Generates a high-level report from the
- * matching results.
+ * matching results. 
  */
 export function generateReport(
   matchingResult: MatchingResult
 ): ReportSummary {
 
   const ambiguous =
-    matchingResult.matched.filter(
-      (match) =>
-        match.allocations.length > 1
-    ).length;
+    matchingResult.duplicateCount;
 
   const matched =
     matchingResult.matchedCount;
