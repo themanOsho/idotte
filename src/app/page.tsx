@@ -1,11 +1,9 @@
 "use client";
-
 import {
   FileSpreadsheet,
   History,
   Users,
 } from "lucide-react";
-
 import { FileUploadCard } from "@/components/shared/file-upload-card";
 import { WorkbookPreview } from "@/components/allocation/workbook-preview";
 import { UploadProgressModal } from "@/components/shared/upload-progress-modal";
@@ -13,62 +11,38 @@ import { useWorkspace } from "@/hooks/use-workspace";
 import { WorkspaceOverview } from "@/components/workspace/workspace-overview";
 import { MatchingDashboard } from "@/components/matching/matching-dashboard";
 import { DuplicateResolution } from "@/components/matching/duplicate-resolution";
-
 export default function HomePage() {
-
   const workspace = useWorkspace();
-
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden py-16 sm:py-24">
-
       {/* Background */}
-
       <div className="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-
       <div className="absolute top-1/4 left-1/2 -z-10 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]" />
-
       <div className="page-boxed w-full space-y-12 px-4">
-
         {/* Hero */}
-
         <section className="page-header items-center text-center space-y-4">
-
           <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-primary">
-
             Idotte
-
           </div>
-
           <h1 className="page-title">
-
-            Placement
-
+            <span className="max-w-lg">A Mrs Olujobi Software Placement Tool</span>
           </h1>
-
           <p className="page-description max-w-md mx-auto">
-
-            Generate examination placement reports from allocation datasets and client lists in minutes.
-
+            Generate examination placement reports from allocation datasets and client lists in minutes. 
           </p>
-
         </section>
-
         {/* Upload */}
-
         {/* Stage 1 */}
-
         {!workspace.allocationSummary && (
           <FileUploadCard
-            title="Upload Allocation Dataset"
-            description="Upload the official allocation workbook to begin."
-            buttonText="Choose Allocation Workbook"
+            title="Upload Dataset"
+            description="Drag and drop or browse your computer to upload the allocation workbook to begin."
+            buttonText="Choose Workbook"
             icon={<FileSpreadsheet className="h-10 w-10 text-primary" />}
             onFileSelect={workspace.uploadAllocation}
           />
         )}
-
         {/* Stage 2 */}
-
         {workspace.allocationSummary &&
         !workspace.clientSummary && (
           <>
@@ -81,7 +55,6 @@ export default function HomePage() {
               namesWithDuplicates={workspace.allocationPreview!.namesWithDuplicates}
               worksheets={workspace.allocationPreview!.worksheets}
             />
-
             <FileUploadCard
               title="Upload Client List"
               description="Upload the client workbook for matching."
@@ -91,9 +64,7 @@ export default function HomePage() {
             />
           </>
         )}
-
         {/* Stage 3 */}
-
         {workspace.allocationSummary &&
         workspace.clientSummary && (
           <WorkspaceOverview
@@ -101,7 +72,6 @@ export default function HomePage() {
             clientRecords={workspace.clientSummary.totalRecords}
           />
         )}
-
         {workspace.matchingResult && (
           <MatchingDashboard
             matchedCount={workspace.matchingResult.matchedCount}
@@ -110,69 +80,40 @@ export default function HomePage() {
             matchRate={workspace.matchingResult.matchRate}
           />
         )}
-
         {workspace.matchingResult && (
-
           <DuplicateResolution
-
             duplicates={
               workspace.matchingResult.duplicateMatches
             }
-
             onResolve={(client, allocation) =>
-
               workspace.resolveDuplicate({
-
                 client,
-
                 selectedAllocation: allocation,
-
               })
-
             }
-
           />
-
         )}
-
         {/* Footer */}
-
         <div className="flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-4 text-xs text-muted-foreground sm:flex-row">
-
           <div className="flex items-center gap-2">
-
             <span className="h-2 w-2 animate-ping rounded-full bg-primary" />
-
             System Operational
-
           </div>
-
           <span>
-
             Idotte v0.1.0
-
           </span>
-
           <button className="flex items-center gap-2">
-
             <History className="h-4 w-4" />
-
             Recent Runs
-
           </button>
-
         </div>
-
       </div>
-
       <UploadProgressModal
         open={workspace.isBusy}
         title={workspace.uploadMessage}
         progress={workspace.uploadProgress}
         complete={workspace.uploadStage === "complete"}
       />
-
     </main>
   );
-
 }

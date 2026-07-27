@@ -1,14 +1,11 @@
 "use client";
-
 import { useEffect, useState } from "react";
-
 interface UploadProgressModalProps {
   open: boolean;
   title: string;
   progress: number;
   complete: boolean;
 }
-
 export function UploadProgressModal({
   open,
   title,
@@ -16,22 +13,17 @@ export function UploadProgressModal({
   complete,
 }: UploadProgressModalProps) {
   const [visible, setVisible] = useState(open);
-
   useEffect(() => {
     if (open) {
       setVisible(true);
       return;
     }
-
     const timeout = setTimeout(() => {
       setVisible(false);
     }, 300);
-
     return () => clearTimeout(timeout);
   }, [open]);
-
   if (!visible) return null;
-
   return (
     <div
       className={`
@@ -58,26 +50,21 @@ export function UploadProgressModal({
         `}
       >
         <div className="space-y-6">
-
           <div className="text-center">
             <h2 className="text-xl font-semibold tracking-tight">
               {complete ? "Completed" : title}
             </h2>
-
             <p className="mt-2 text-sm text-muted-foreground">
               {complete
                 ? "Allocation dataset processed successfully."
                 : "Please wait while Idotte processes your workbook."}
             </p>
           </div>
-
           <div>
-
             <div className="mb-2 flex items-center justify-between text-xs text-muted-foreground">
               <span>Status</span>
               <span>{progress}%</span>
             </div>
-
             <div className="h-2 overflow-hidden rounded-full bg-muted">
               <div
                 className="h-full rounded-full bg-primary transition-all duration-300"
@@ -86,9 +73,7 @@ export function UploadProgressModal({
                 }}
               />
             </div>
-
           </div>
-
         </div>
       </div>
     </div>
