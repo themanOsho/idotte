@@ -92,13 +92,16 @@ export default function HomePage() {
               }
             />
         )} */}
+        {/* plcement button */}
         {workspace.matchingResult && (
-          <Link
-            href="/report"
-            className="btn-primary"
-          >
-            View Report
-          </Link>
+          <div className="mt-12 flex justify-center">
+            <Link
+              href="/report"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              View Report
+            </Link>
+          </div>
         )}
         {/* {workspace.matchingResult && (
           <ReportViewer

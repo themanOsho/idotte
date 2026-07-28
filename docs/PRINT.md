@@ -126,3 +126,22 @@ Why?
 Because you're **already using ExcelJS**, and Idotte's users are dealing with Excel workbooks every day. A well-formatted `.xlsx` export is likely to be more valuable operationally than a PDF. PDF can largely piggyback on the polished print layout, while the Excel export becomes a first-class deliverable that users can archive, inspect, or edit if needed.
 
 At that point, Idotte will have evolved from a matching tool into a complete **placement report generation system**, which feels like the right milestone before adding more advanced features such as fuzzy matching improvements or duplicate resolution.
+
+
+src/
+├── engine/
+│   └── export/
+│       └── excel/
+│           ├── workbook.ts
+│           ├── styles.ts
+│           ├── summary-sheet.ts
+│           ├── matched-sheet.ts
+│           ├── duplicate-sheet.ts
+│           └── unmatched-sheet.ts
+│
+├── services/
+│   └── export-service.ts
+│
+└── components/
+    └── report/
+        └── export-excel-button.tsx

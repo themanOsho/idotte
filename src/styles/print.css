@@ -2,7 +2,7 @@
 
   @page {
     size: A4 portrait;
-    margin: 16mm;
+    margin: 6mm;
   }
 
   html,
@@ -79,6 +79,18 @@
   img,
   svg {
     max-width: 100%;
+  }
+
+}
+
+/* .print-hidden {
+  display: none;
+} */
+
+@media print {
+
+  .print-hidden {
+    display: none !important;
   }
 
 }

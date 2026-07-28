@@ -11,7 +11,7 @@ export function ReportHeader() {
         {REPORT_CONFIG.organisation}
       </p>
 
-      <h1 className="mt-3 text-4xl font-bold tracking-tight">
+      <h1 className="mt-6 text-4xl font-bold tracking-tight">
         {REPORT_CONFIG.title}
       </h1>
 

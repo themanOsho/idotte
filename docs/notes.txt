@@ -18,3 +18,9 @@ Excel export
 PDF export
 
 
+
+
+-- I tried "Print Export" the frontpage includes content of the report page (info not needed):
+
+also need to increase the whole size of the table 
+lets commit and push to github the preview and the export feature.. from the print preview i can tell that there are still extra space (top, bottom, left and right) we can use

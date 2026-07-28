@@ -34,6 +34,11 @@ export default function ReportPage() {
         client={workspace.clientSummary}
         result={workspace.matchingResult}
       />
+      {/* <ReportViewer
+        allocation={workspace.allocationPreview}
+        client={workspace.clientSummary}
+        result={workspace.matchingResult}
+      /> */}
     </main>
   );
 }
