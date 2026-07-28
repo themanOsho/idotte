@@ -1,4 +1,10 @@
 to clear new line
 ^\s*\n
 
-git commit -m "update page copywriting"
+
+I have just completed these components:
+
+Print stylesheet (@media print)
+Excel export
+PDF export
+

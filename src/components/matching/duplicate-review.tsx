@@ -74,22 +74,22 @@ export function DuplicateReview({ duplicates }: DuplicateReviewProps) {
                   >
                     {/* Header info inside card */}
                     <div className="mb-4 flex flex-col items-start justify-start gap-2 sm:flex-row sm:items-center border-b border-muted pb-3">
-                      <h4 className="font-semibold text-xs md:text-sm uppercase tracking-wider text-muted-foreground">
+                      <h4 className="font-semibold text-xs md:text-sm uppercase tracking-wider text-primary">
                         Allocation {index + 1}
                       </h4>
-                      <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] md:text-xs font-medium text-primary">
+                      {/* <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] md:text-xs font-medium text-primary">
                         ID: {allocation.candidateId}
-                      </span>
+                      </span> */}
                     </div>
 
                     {/* Highly responsive 2-column or 1-column layout */}
                     <div className="grid gap-3.5 grid-cols-1 sm:grid-cols-2">
                       <div className="space-y-0.5">
-                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/80 block">
-                          Full Name
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/80 font-semibold block">
+                          Candidate ID
                         </span>
                         <p className="text-xs md:text-sm font-medium break-words">
-                          {allocation.fullName}
+                          {allocation.candidateId}
                         </p>
                       </div>
 
@@ -103,7 +103,7 @@ export function DuplicateReview({ duplicates }: DuplicateReviewProps) {
                       </div>
 
                       <div className="space-y-0.5">
-                        <span className="text-[10px] lowercase tracking-wider text-muted-foreground/80 block">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/80 block">
                           Feeder School
                         </span>
                         <p className="text-xs md:text-sm break-words">
@@ -112,7 +112,7 @@ export function DuplicateReview({ duplicates }: DuplicateReviewProps) {
                       </div>
 
                       <div className="space-y-0.5">
-                        <span className="text-[10px] lowercase tracking-wider text-muted-foreground/80 block">
+                        <span className="text-[10px] uppercase tracking-wider text-muted-foreground/80 block">
                           Centre Name
                         </span>
                         <p className="text-xs md:text-sm break-words">
