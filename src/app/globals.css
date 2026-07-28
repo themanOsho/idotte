@@ -158,3 +158,36 @@ html {
     @apply flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border-2 border-dashed border-border bg-background/40 hover:border-primary/50 hover:bg-primary/[0.02] px-6 text-center transition-all duration-300;
   }
 }
+
+/* selection */
+::selection {
+  background-color: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+::-moz-selection {
+  background-color: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}

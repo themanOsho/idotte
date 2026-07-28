@@ -12,6 +12,8 @@ import { WorkspaceOverview } from "@/components/workspace/workspace-overview";
 import { MatchingDashboard } from "@/components/matching/matching-dashboard";
 import { DuplicateResolution } from "@/components/matching/duplicate-resolution";
 import { DuplicateReview } from "@/components/matching/duplicate-review";
+import { ReportViewer } from "@/components/report/report-viewer";
+import Link from "next/link";
 
 export default function HomePage() {
   const workspace = useWorkspace();
@@ -82,14 +84,29 @@ export default function HomePage() {
             matchRate={workspace.matchingResult.matchRate}
           />
         )}
-        {workspace.matchingResult &&
+        {/* {workspace.matchingResult &&
           workspace.matchingResult.duplicateCount > 0 && (
             <DuplicateReview
               duplicates={
                 workspace.matchingResult.duplicateMatches
               }
             />
+        )} */}
+        {workspace.matchingResult && (
+          <Link
+            href="/report"
+            className="btn-primary"
+          >
+            View Report
+          </Link>
         )}
+        {/* {workspace.matchingResult && (
+          <ReportViewer
+            allocation={workspace.allocationPreview!}
+            client={workspace.clientSummary!}
+            result={workspace.matchingResult}
+          />
+        )} */}
         {/* {workspace.matchingResult && (
           <DuplicateResolution
             duplicates={

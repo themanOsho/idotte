@@ -12,7 +12,7 @@ export function MatchedTable({
   return (
     <section className="section-card">
 
-      <div className="mb-6">
+      <div className="mb-6 p-4">
         <h2 className="text-xl font-semibold">
           Matched Candidates
         </h2>
@@ -22,7 +22,7 @@ export function MatchedTable({
         </p>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto px-4 pb-4">
 
         <table className="w-full border-collapse table-fixed text-sm">
 
@@ -80,7 +80,7 @@ export function MatchedTable({
                 {record.client.name}
                 </td>
 
-                <td className="border px-4 py-3 font-mono text-xs whitespace-nowrap">
+                <td className="border px-4 py-3 whitespace-nowrap">
                 {record.allocation.candidateId}
                 </td>
 

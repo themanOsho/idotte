@@ -4,7 +4,17 @@ to clear new line
 
 I have just completed these components:
 
+report
+ ┣ duplicate-table.tsx
+ ┣ matched-table.tsx
+ ┣ report-cover.tsx
+ ┣ report-header.tsx
+ ┣ report-preview.tsx
+ ┗ unmatched-table.tsx
+
+Lets build these below so that by end of day, Idotte is already solving the problem:
 Print stylesheet (@media print)
 Excel export
 PDF export
+
 

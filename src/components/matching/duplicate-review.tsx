@@ -15,10 +15,10 @@ interface DuplicateReviewProps {
 
 export function DuplicateReview({ duplicates }: DuplicateReviewProps) {
   return (
-    <section className="section-card w-full max-w-full px-4 md:px-6">
+    <section className="section-card w-full max-w-full px-!4 md:px-!6">
       
       {/* Header section with responsive spacing */}
-      <div className="mb-6 md:mb-8">
+      <div className="md:mb-8 p-4">
         <h2 className="text-lg md:text-xl font-semibold tracking-tight">
           Duplicate Review
         </h2>
@@ -30,7 +30,7 @@ export function DuplicateReview({ duplicates }: DuplicateReviewProps) {
       </div>
 
       {/* Accordion container */}
-      <Accordion multiple className="space-y-3 md:space-y-4">
+      <Accordion multiple className="space-y-3 !border-0 md:space-y-4">
         {duplicates.map((duplicate) => {
           const key = `${duplicate.client.worksheetName}-${duplicate.client.rowNumber}`;
 
@@ -38,7 +38,7 @@ export function DuplicateReview({ duplicates }: DuplicateReviewProps) {
             <AccordionItem
               key={key}
               value={key}
-              className="overflow-hidden rounded-xl md:rounded-2xl border bg-card"
+              className="overflow-hidden rounded-xl md:rounded-2xl border bg-card mx-4"
             >
               {/* Trigger area optimized for touch targets and mobile wrapping */}
               <AccordionTrigger className="px-4 py-4 md:px-6 md:py-5 hover:no-underline transition-all">

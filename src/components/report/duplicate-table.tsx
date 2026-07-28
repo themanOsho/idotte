@@ -3,39 +3,31 @@
 import { DuplicateMatch } from "@/types/matching";
 
 interface DuplicateTableProps {
-  duplicates: DuplicateMatch[];
+  records: DuplicateMatch[];
 }
 
 export function DuplicateTable({
-  duplicates,
+  records,
 }: DuplicateTableProps) {
-
-  if (duplicates.length === 0) {
+  if (records.length === 0) {
     return null;
   }
 
   return (
-
     <section className="section-card">
-
-      <div className="mb-6">
-
+      <div className="mb-6 p-4">
         <h2 className="text-xl font-semibold">
           Duplicate Candidates
         </h2>
 
         <p className="mt-2 text-sm text-muted-foreground">
           These candidates matched multiple allocation records.
-          All possible matches will appear in the exported report
-          for manual verification.
+          All possible matches are included below for manual verification.
         </p>
-
       </div>
 
-      <div className="overflow-x-auto">
-
+      <div className="overflow-x-auto px-4 pb-4">
         <table className="w-full table-fixed border-collapse text-sm">
-
           <colgroup>
             <col style={{ width: "6%" }} />
             <col style={{ width: "30%" }} />
@@ -45,9 +37,7 @@ export function DuplicateTable({
           </colgroup>
 
           <thead>
-
             <tr className="bg-amber-500/10">
-
               <th className="border px-4 py-3 text-center font-semibold">
                 S/N
               </th>
@@ -67,17 +57,12 @@ export function DuplicateTable({
               <th className="border px-4 py-3 text-left font-semibold">
                 Examination Centre
               </th>
-
             </tr>
-
           </thead>
 
           <tbody>
-
-            {duplicates.map((duplicate) =>
-
+            {records.map((duplicate) =>
               duplicate.allocations.map((allocation, index) => (
-
                 <tr
                   key={`${duplicate.client.worksheetName}-${duplicate.client.rowNumber}-${allocation.candidateId}`}
                   className={
@@ -86,55 +71,35 @@ export function DuplicateTable({
                       : ""
                   }
                 >
-
                   <td className="border px-4 py-3 text-center">
-
                     {index === 0
                       ? duplicate.client.serialNumber
                       : ""}
-
                   </td>
 
                   <td className="border px-4 py-3 font-medium break-words">
-
                     {index === 0
                       ? duplicate.client.name
                       : ""}
-
                   </td>
 
                   <td className="border px-4 py-3 font-mono text-xs whitespace-nowrap">
-
                     {allocation.candidateId}
-
                   </td>
 
                   <td className="border px-4 py-3 break-words">
-
                     {allocation.schoolName}
-
                   </td>
 
                   <td className="border px-4 py-3 break-words">
-
                     {allocation.centreName}
-
                   </td>
-
                 </tr>
-
               ))
-
             )}
-
           </tbody>
-
         </table>
-
       </div>
-
     </section>
-
   );
-
 }

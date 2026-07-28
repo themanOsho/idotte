@@ -3,7 +3,7 @@ export const REPORT_CONFIG = {
     "Lagos State Universal Basic Education Board",
 
   title:
-    "Primary Six Placement Report",
+    "Placement Report",
 
   productName:
     "Idotte",

@@ -2,7 +2,7 @@
 import { DuplicateMatch } from "@/types/matching";
 import { AllocationRecord } from "@/types/allocation";
 import { ClientRecord } from "@/types/client";
-import { DuplicateCard } from "./duplicate-card";
+import { DuplicateCard } from "./--duplicate-card";
 interface DuplicateResolutionProps {
   duplicates: DuplicateMatch[];
   onResolve: (

@@ -34,7 +34,7 @@ export function ReportPreview({
       />
 
       <DuplicateTable
-        duplicates={result.duplicateMatches}
+        records={result.duplicateMatches}
       />
 
       <UnmatchedTable

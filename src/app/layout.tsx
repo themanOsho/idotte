@@ -3,6 +3,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { siteConfig } from "@/config/site";
 import { WorkspaceProvider } from "@/context/workspace-provider";
+import "@/styles/print.css";
 
 export const metadata: Metadata = {
   title: {
