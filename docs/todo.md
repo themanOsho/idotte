@@ -167,13 +167,8 @@ Automatic update of the Matching Results Dashboard as duplicates are resolved.
 
 That's the point where Idotte starts guiding users through the real placement process rather than just displaying data.
 
-
-# ########3
-Evolve ClientRecord to carry workbook metadata like: 
-interface ClientRecord {
-    rowNumber: number;
-    worksheetName: string;
-    name: string;
-}
-
 -- moving on please minimize the use of extra lines in the code Instead of using extra line after every line of code instead use it after code block/functions/sections
+
+
+then:
+Duplicate Review UI,

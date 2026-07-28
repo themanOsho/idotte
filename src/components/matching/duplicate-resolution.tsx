@@ -31,7 +31,7 @@ export function DuplicateResolution({
       <div className="grid gap-6">
         {duplicates.map((duplicate) => (
           <DuplicateCard
-            key={duplicate.client.name}
+            key={`${duplicate.client.worksheetName}-${duplicate.client.serialNumber}`}
             duplicate={duplicate}
             onResolve={(allocation) =>
               onResolve(

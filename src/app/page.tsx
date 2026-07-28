@@ -11,6 +11,8 @@ import { useWorkspace } from "@/hooks/use-workspace";
 import { WorkspaceOverview } from "@/components/workspace/workspace-overview";
 import { MatchingDashboard } from "@/components/matching/matching-dashboard";
 import { DuplicateResolution } from "@/components/matching/duplicate-resolution";
+import { DuplicateReview } from "@/components/matching/duplicate-review";
+
 export default function HomePage() {
   const workspace = useWorkspace();
   return (
@@ -25,10 +27,10 @@ export default function HomePage() {
             Idotte
           </div>
           <h1 className="page-title">
-            <span className="max-w-lg">A Mrs Olujobi Software Placement Tool</span>
+            Placement
           </h1>
-          <p className="page-description max-w-md mx-auto">
-            Generate examination placement reports from allocation datasets and client lists in minutes. 
+          <p className="page-description max-w-lg mx-auto">
+            Generate examination placement reports from allocation datasets and client lists in minutes. A <span className="font-medium text-foreground">Mrs Olujobi</span> software tool.
           </p>
         </section>
         {/* Upload */}
@@ -36,7 +38,7 @@ export default function HomePage() {
         {!workspace.allocationSummary && (
           <FileUploadCard
             title="Upload Dataset"
-            description="Drag and drop or browse your computer to upload the allocation workbook to begin."
+            description="Upload the allocation workbook to begin."
             buttonText="Choose Workbook"
             icon={<FileSpreadsheet className="h-10 w-10 text-primary" />}
             onFileSelect={workspace.uploadAllocation}
@@ -80,7 +82,15 @@ export default function HomePage() {
             matchRate={workspace.matchingResult.matchRate}
           />
         )}
-        {workspace.matchingResult && (
+        {workspace.matchingResult &&
+          workspace.matchingResult.duplicateCount > 0 && (
+            <DuplicateReview
+              duplicates={
+                workspace.matchingResult.duplicateMatches
+              }
+            />
+        )}
+        {/* {workspace.matchingResult && (
           <DuplicateResolution
             duplicates={
               workspace.matchingResult.duplicateMatches
@@ -92,7 +102,7 @@ export default function HomePage() {
               })
             }
           />
-        )}
+        )} */}
         {/* Footer */}
         <div className="flex flex-col items-center justify-between gap-4 border-t border-border/40 pt-4 text-xs text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">

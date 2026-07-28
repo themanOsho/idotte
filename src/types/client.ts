@@ -1,4 +1,7 @@
 export interface ClientRecord {
+  serialNumber: string;
+  rowNumber: number;
+  worksheetName: string;
   name: string;
 }
 
@@ -11,6 +14,5 @@ export interface ClientWorksheet {
 export interface ClientWorkbookSummary {
   sheetCount: number;
   totalRecords: number;
-
   worksheets: ClientWorksheet[];
 }

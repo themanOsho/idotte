@@ -71,12 +71,23 @@ export async function parseClientWorkbook(
     const nameColumn =
       headerMap.get(CLIENT_HEADERS.NAME)!;
 
+    const serialNumberColumn =
+      headerMap.get(CLIENT_HEADERS.SERIAL_NUMBER)!;
+    
     worksheet.eachRow((row, rowNumber) => {
       if (rowNumber === 1) return;
 
       if (!row.hasValues) return;
 
       records.push({
+        serialNumber: String(
+          row.getCell(serialNumberColumn).value ?? ""
+        ).trim(),
+
+        rowNumber: rowNumber,
+
+        worksheetName: worksheet.name,
+
         name: String(
           row.getCell(nameColumn).value ?? ""
         ).trim(),

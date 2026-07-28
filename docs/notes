@@ -1,0 +1,4 @@
+to clear new line
+^\s*\n
+
+git commit -m "update page copywriting"
