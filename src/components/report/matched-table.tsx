@@ -22,9 +22,8 @@ export function MatchedTable({
         </p>
       </div>
 
-      <div className="overflow-x-auto px-4 pb-4">
-
-        <table className="w-full border-collapse table-fixed text-sm">
+      <div className="max-sm:overflow-x-auto sm:overflow-x-visible px-4 pb-4 rounded-xl border border-border">
+        <table className="sm:min-w-full sm:w-full w-[1000px] lg:table-fixed border-collapse text-sm print:min-w-0">
 
             <colgroup>
                 <col style={{ width: "6%" }} />
@@ -35,32 +34,27 @@ export function MatchedTable({
             </colgroup>
 
           <thead>
-
             <tr className="bg-muted/40">
-
-              <th className="border px-4 py-3 text-center font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-center font-semibold">
                 S/N
-            </th>
+              </th>
 
-
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Candidate Name
               </th>
 
-              <th className="w-48 border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Candidate ID
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Feeder School
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Examination Centre
               </th>
-
             </tr>
-
           </thead>
 
           <tbody>

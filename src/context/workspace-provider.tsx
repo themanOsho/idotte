@@ -19,23 +19,20 @@ import { processMatching } from "@/services/matching-service";
 import { generateReport } from "@/services/report-service";
 import { DuplicateResolution } from "@/types/resolution";
 
-export interface WorkspaceContextValue
-  extends WorkspaceState {
-  uploadAllocation: (
-    file: File
-  ) => Promise<void>;
 
-  uploadClient: (
-    file: File
-  ) => Promise<void>;
+export interface WorkspaceContextValue extends WorkspaceState{
+  allocationError:string|null;
+  clientError:string|null;
 
-  resolveDuplicate: (
-    resolution: DuplicateResolution
-  ) => void;
+  uploadAllocation:(file:File)=>Promise<void>;
+  uploadClient:(file:File)=>Promise<void>;
 
-  runMatching: () => Promise<void>;
+  clearAllocationError:()=>void;
+  clearClientError:()=>void;
 
-  resetWorkspace: () => void;
+  resolveDuplicate:(resolution:DuplicateResolution)=>void;
+  runMatching:()=>Promise<void>;
+  resetWorkspace:()=>void;
 }
 
 const WorkspaceContext =
@@ -77,63 +74,54 @@ export function WorkspaceProvider({
   const [uploadProgress, setUploadProgress] =
     useState(0);
 
+  const [allocationError,setAllocationError]=
+    useState<string|null>(null);
+
+  const [clientError,setClientError]=
+    useState<string|null>(null);    
+
   const [isBusy, setIsBusy] =
     useState(false);
 
-  async function uploadAllocation(
-    file: File
-  ) {
+  async function uploadAllocation(file:File){
 
-    try {
+    try{
 
+      setAllocationError(null);
       setIsBusy(true);
 
-    const result =
-      await processAllocationWorkbook(
+      const result=await processAllocationWorkbook(
         file,
-        (progress) => {
-
-          setUploadStage(
-            progress.stage
-          );
-
-          setUploadMessage(
-            progress.message
-          );
-
-          setUploadProgress(
-            progress.progress
-          );
-
+        progress=>{
+          setUploadStage(progress.stage);
+          setUploadMessage(progress.message);
+          setUploadProgress(progress.progress);
         }
       );
 
-      setAllocationSummary(
-        result.summary
+      setAllocationSummary(result.summary);
+      setAllocationIndex(result.index);
+      setAllocationPreview(result.preview);
+
+      await new Promise(resolve=>setTimeout(resolve,800));
+
+      setUploadStage("idle");
+
+    }catch(error){
+
+      if(process.env.NODE_ENV==="development"){
+        console.error(error);
+      }
+
+      setAllocationError(
+        error instanceof Error
+          ? error.message
+          : "Unable to import allocation workbook."
       );
-
-      setAllocationIndex(
-        result.index
-      );
-
-      setAllocationPreview(
-        result.preview
-      );
-
-    // Keep the success state visible briefly.
-    await new Promise((resolve) =>
-      setTimeout(resolve, 800)
-    );
-
-    setUploadStage("idle");
-
-    } catch (error) {
-
-      console.error(error);
 
       setUploadStage("error");
 
-    } finally {
+    }finally{
 
       setIsBusy(false);
 
@@ -141,81 +129,61 @@ export function WorkspaceProvider({
 
   }
 
-  async function uploadClient(
-    file: File
-  ) {
+  async function uploadClient(file:File){
 
-    try {
+    try{
 
+      setClientError(null);
       setIsBusy(true);
 
-      const result =
-        await processClientWorkbook(
-          file,
-          (progress) => {
-
-            setUploadStage(
-              progress.stage
-            );
-
-            setUploadMessage(
-              progress.message
-            );
-
-            setUploadProgress(
-              progress.progress
-            );
-
-          }
-        );
-
-      setClientSummary(
-        result.summary
+      const result=await processClientWorkbook(
+        file,
+        progress=>{
+          setUploadStage(progress.stage);
+          setUploadMessage(progress.message);
+          setUploadProgress(progress.progress);
+        }
       );
 
-      // We need the summary immediately for runMatching()
-      const summary = result.summary;
+      const summary=result.summary;
 
       setClientSummary(summary);
 
-      // Run matching immediately after client upload
-      if (allocationIndex) {
+      if(allocationIndex){
 
-        const response =
-          await processMatching(
-            allocationIndex,
-            summary,
-            (progress) => {
-
-              setUploadStage(progress.stage);
-
-              setUploadMessage(progress.message);
-
-              setUploadProgress(progress.progress);
-
-            }
-          );
+        const response=await processMatching(
+          allocationIndex,
+          summary,
+          progress=>{
+            setUploadStage(progress.stage);
+            setUploadMessage(progress.message);
+            setUploadProgress(progress.progress);
+          }
+        );
 
         setMatchingResult(response.result);
 
-        console.log(response.result);
-
       }
 
-      await new Promise(
-        (resolve) =>
-          setTimeout(resolve, 800)
-      );
+      await new Promise(resolve=>setTimeout(resolve,800));
 
       setUploadStage("idle");
 
-    } catch (error) {
+    }catch(error){
 
-      console.error(error);
+      if(process.env.NODE_ENV==="development"){
+        console.error(error);
+      }
+
+      setClientError(
+        error instanceof Error
+          ? error.message
+          : "Unable to import client workbook."
+      );
 
       setUploadStage("error");
 
-    } finally {
+    }finally{
 
       setIsBusy(false);
 
@@ -318,62 +286,76 @@ export function WorkspaceProvider({
 
     }
 
-    function resetWorkspace() {
+  function clearAllocationError(){
+    setAllocationError(null);
+  }
 
-      setAllocationSummary(null);
+  function clearClientError(){
+    setClientError(null);
+  }
 
-      setAllocationPreview(null);
+  function resetWorkspace(){
 
-      setAllocationIndex(null);
+    setAllocationSummary(null);
+    setAllocationPreview(null);
+    setAllocationIndex(null);
 
-      setClientSummary(null);
+    setClientSummary(null);
 
-      setMatchingResult(null);
+    setMatchingResult(null);
 
-      setDuplicateResolutions([]);
+    setDuplicateResolutions([]);
 
-      setUploadStage("idle");
+    setAllocationError(null);
+    setClientError(null);
 
-      setIsBusy(false);
+    setUploadStage("idle");
+    setUploadMessage("");
+    setUploadProgress(0);
 
-      setUploadMessage("");
+    setIsBusy(false);
 
-      setUploadProgress(0);
-
-    }
+  }
 
   return (
 
-    <WorkspaceContext.Provider
-      value={{
-        allocationSummary,
-        allocationPreview,
-        allocationIndex,
-        clientSummary,
-        matchingResult,
+  <WorkspaceContext.Provider
+    value={{
+      allocationSummary,
+      allocationPreview,
+      allocationIndex,
 
-        duplicateResolutions,
+      clientSummary,
+      matchingResult,
 
-        uploadStage,
-        uploadMessage,
-        uploadProgress,
+      clearAllocationError,
+      clearClientError,
 
-        isBusy,
+      duplicateResolutions,
 
-        uploadAllocation,
-        uploadClient,
+      allocationError,
+      clientError,
 
-        resolveDuplicate,
+      uploadStage,
+      uploadMessage,
+      uploadProgress,
 
-        runMatching,
+      isBusy,
 
-        resetWorkspace,
-      }}
-    >
+      uploadAllocation,
+      uploadClient,
 
-      {children}
+      resolveDuplicate,
 
-    </WorkspaceContext.Provider>
+      runMatching,
+
+      resetWorkspace,
+    }}
+  >
+
+  {children}
+
+  </WorkspaceContext.Provider>
 
   );
 

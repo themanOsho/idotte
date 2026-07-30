@@ -6,7 +6,12 @@ import type { WorkbookPreview } from "@/types/preview";
 import type { AllocationIndexResult } from "@/engine/allocation/indexer";
 
 export interface AllocationServiceProgress {
-  stage: "reading" | "indexing" | "complete";
+  stage:
+  | "reading"
+  | "parsing"
+  | "indexing"
+  | "preparing"
+  | "complete";
 
   message: string;
 
@@ -45,12 +50,21 @@ export async function processAllocationWorkbook(
   });
 
   const parsedWorkbook =
-    await parseAllocationWorkbook(file);
+    await parseAllocationWorkbook(
+      file,
+      progress=>{
+        onProgress?.({
+          stage:progress.stage,
+          message:progress.message,
+          progress:progress.progress,
+        });
+      }
+    );
 
   onProgress?.({
-    stage: "indexing",
-    message: "Building allocation index...",
-    progress: 75,
+    stage:"indexing",
+    progress:82,
+    message:"Building allocation index...",
   });
 
   const index =
@@ -86,6 +100,12 @@ export async function processAllocationWorkbook(
 
   };
 
+  onProgress?.({
+    stage:"preparing",
+    progress:94,
+    message:"Preparing workbook preview...",
+  });
+
   const preview: WorkbookPreview = {
 
     fileName: file.name,
@@ -111,9 +131,9 @@ export async function processAllocationWorkbook(
   };
 
   onProgress?.({
-    stage: "complete",
-    message: "Upload completed.",
-    progress: 100,
+    stage:"complete",
+    progress:100,
+    message:"Allocation workbook imported.",
   });
 
   return {

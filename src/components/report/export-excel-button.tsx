@@ -42,7 +42,7 @@ export function ExportExcelButton({
     <button
       onClick={handleExport}
       disabled={isExporting}
-      className="btn-secondary cursor-printer"
+      className="btn-secondary inline-flex items-center gap-2 px-5 py-3 text-sm font-medium transition-opacity hover:opacity-90 cursor-printer"
     >
       <Download className="h-4 w-4" />
 

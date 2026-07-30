@@ -172,3 +172,15 @@ That's the point where Idotte starts guiding users through the real placement pr
 
 then:
 Duplicate Review UI,
+
+
+What I'd implement first
+
+Before anything else, I'd make these four improvements:
+
+Flexible header matching (case-insensitive, trims whitespace, normalises spacing, and supports common aliases like Name, NAME, Candidate ID, CandidateID).
+Friendly UI error handling (display import failures in the interface instead of leaving them in the console).
+Progress updates per worksheet/stage (so users see steady movement rather than 10% → 100%).
+Aggregated validation (report all worksheet issues in one message instead of failing on the first error).
+
+Those changes won't add any new features, but they'll make Idotte feel significantly more reliable and professional for your aunt's day-to-day use.

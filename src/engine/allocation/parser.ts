@@ -1,6 +1,9 @@
 import ExcelJS from "exceljs";
 
+import { normalizeHeader } from "@/lib/header";
 import { ALLOCATION_HEADERS } from "./constants";
+import { getHeaderLabel } from "@/lib/header-label";
+
 
 import {
   AllocationRecord,
@@ -63,13 +66,11 @@ export async function parseAllocationWorkbook(
     const headerMap = new Map<string, number>();
 
     headerRow.eachCell((cell, columnNumber) => {
-
-      const header = String(cell.value ?? "").trim();
+      const header = normalizeHeader(String(cell.value ?? ""));
 
       if (header) {
         headerMap.set(header, columnNumber);
       }
-
     });
 
     const requiredHeaders = Object.values(
@@ -83,7 +84,16 @@ export async function parseAllocationWorkbook(
     if (missingHeaders.length > 0) {
 
       throw new Error(
-        `Worksheet "${worksheet.name}" is missing required header(s): ${missingHeaders.join(", ")}`
+        [
+          "Allocation workbook could not be imported.",
+          "",
+          `Worksheet:`,
+          worksheet.name,
+          "",
+          "Missing columns",
+          "",
+          ...missingHeaders.map(header=>`• ${getHeaderLabel(header)}`)
+        ].join("\n")
       );
 
     }

@@ -32,12 +32,12 @@ export function ReportViewer({
 
         <Link
             href="/"
-            className="text-sm text-muted-foreground hover:text-foreground print-hidden mb-6"
+            className="text-sm text-muted-foreground hover:text-foreground print-hidden"
         >
             ← Back to Workspace
         </Link>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print-hidden">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between print-hidden mb-12 mt-6">
 
             <div>
                 <h2 className="text-xl font-semibold text-foreground sm:text-2xl">
@@ -62,7 +62,22 @@ export function ReportViewer({
         </div>
 
 
-      <div className="report-document space-y-10">
+      <div className="report-page space-y-10">
+
+        {/* watermark */}
+         <div
+            className="report-watermark hidden"
+            aria-hidden="true"
+            >
+            <div className="text-4xl font-bold tracking-widest">
+                IDOTTE
+            </div>
+
+            <div className="mt-3 text-2xl font-medium">
+                Mrs. Olujobi
+            </div>
+        </div>
+        {/* end water mark */}
 
         <ReportHeader />
 

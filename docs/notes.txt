@@ -24,3 +24,18 @@ PDF export
 
 also need to increase the whole size of the table 
 lets commit and push to github the preview and the export feature.. from the print preview i can tell that there are still extra space (top, bottom, left and right) we can use
+
+# ####################
+git add .
+git commit -m "Improve workbook import workflow and report usability
+
+- Add friendly workbook validation errors
+- Display import failures in a retry modal
+- Support flexible header matching and aliases
+- Improve upload progress with staged progress updates
+- Animate upload progress bar smoothly
+- Add preparing upload stage
+- Improve report table responsiveness on mobile
+- Add horizontal scrolling for report tables
+- Polish print preview and report viewer UX
+- Refine watermark and report presentation"

@@ -4,24 +4,26 @@ import {
   ShieldCheck,
   Upload,
 } from "lucide-react";
-interface FileUploadCardProps {
-  title: string;
-  description: string;
-  buttonText: string;
-  icon: ReactNode;
-  accept?: string;
-  onFileSelect: (
-    file: File
-  ) => void | Promise<void>;
+
+interface FileUploadCardProps{
+  title:string;
+  description:string;
+  buttonText:string;
+  icon:ReactNode;
+  error?:string|null;
+  accept?:string;
+  onFileSelect:(file:File)=>void|Promise<void>;
 }
+
 export function FileUploadCard({
   title,
   description,
   buttonText,
   icon,
-  accept = ".xlsx",
+  error,
+  accept=".xlsx",
   onFileSelect,
-}: FileUploadCardProps) {
+}:FileUploadCardProps) {
   function handleChange(
     event: React.ChangeEvent<HTMLInputElement>
   ) {

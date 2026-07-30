@@ -26,8 +26,8 @@ export function DuplicateTable({
         </p>
       </div>
 
-      <div className="overflow-x-auto px-4 pb-4">
-        <table className="w-full table-fixed border-collapse text-sm">
+      <div className="max-sm:overflow-x-auto sm:overflow-x-visible px-4 pb-4 rounded-xl border border-border">
+        <table className="sm:min-w-full sm:w-full w-[1000px] lg:table-fixed border-collapse text-sm print:min-w-0">
           <colgroup>
             <col style={{ width: "6%" }} />
             <col style={{ width: "30%" }} />
@@ -38,23 +38,23 @@ export function DuplicateTable({
 
           <thead>
             <tr className="bg-amber-500/10">
-              <th className="border px-4 py-3 text-center font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-center font-semibold">
                 S/N
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Candidate Name
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Candidate ID
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Feeder School
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Examination Centre
               </th>
             </tr>
@@ -71,27 +71,27 @@ export function DuplicateTable({
                       : ""
                   }
                 >
-                  <td className="border px-4 py-3 text-center">
+                  <td className=" border px-4 py-3 text-center">
                     {index === 0
                       ? duplicate.client.serialNumber
                       : ""}
                   </td>
 
-                  <td className="border px-4 py-3 font-medium break-words">
+                  <td className="whitespace-wrap border px-4 py-3 font-medium break-words">
                     {index === 0
                       ? duplicate.client.name
                       : ""}
                   </td>
 
-                  <td className="border px-4 py-3 font-mono text-xs whitespace-nowrap">
+                  <td className="whitespace-wrap border px-4 py-3 text-xs">
                     {allocation.candidateId}
                   </td>
 
-                  <td className="border px-4 py-3 break-words">
+                  <td className="whitespace-wrap border px-4 py-3 break-words">
                     {allocation.schoolName}
                   </td>
 
-                  <td className="border px-4 py-3 break-words">
+                  <td className="whitespace-wrap border px-4 py-3 break-words">
                     {allocation.centreName}
                   </td>
                 </tr>

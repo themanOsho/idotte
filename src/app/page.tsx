@@ -1,9 +1,12 @@
 "use client";
+
 import {
   FileSpreadsheet,
   History,
   Users,
 } from "lucide-react";
+
+import { ErrorModal } from "@/components/shared/error-modal";
 import { FileUploadCard } from "@/components/shared/file-upload-card";
 import { WorkbookPreview } from "@/components/allocation/workbook-preview";
 import { UploadProgressModal } from "@/components/shared/upload-progress-modal";
@@ -36,16 +39,26 @@ export default function HomePage() {
           </p>
         </section>
         {/* Upload */}
+        
         {/* Stage 1 */}
         {!workspace.allocationSummary && (
-          <FileUploadCard
-            title="Upload Dataset"
-            description="Upload the allocation workbook to begin."
-            buttonText="Choose Workbook"
-            icon={<FileSpreadsheet className="h-10 w-10 text-primary" />}
-            onFileSelect={workspace.uploadAllocation}
-          />
+        <FileUploadCard
+          title="Upload Dataset"
+          description="Upload the allocation workbook that contains SchoolName and CentreName cols to begin."
+          buttonText="Choose Workbook"
+          icon={<FileSpreadsheet className="h-10 w-10 text-primary" />}
+          error={workspace.allocationError}
+          onFileSelect={workspace.uploadAllocation}
+        />
         )}
+
+        <ErrorModal
+          open={!!workspace.clientError}
+          title="Import Failed"
+          message={workspace.clientError ?? ""}
+          onClose={workspace.clearClientError}
+        />
+
         {/* Stage 2 */}
         {workspace.allocationSummary &&
         !workspace.clientSummary && (
@@ -64,10 +77,19 @@ export default function HomePage() {
               description="Upload the client workbook for matching."
               buttonText="Choose Client Workbook"
               icon={<Users className="h-10 w-10 text-primary" />}
+              error={workspace.clientError}
               onFileSelect={workspace.uploadClient}
             />
           </>
         )}
+
+        <ErrorModal
+          open={!!workspace.allocationError}
+          title="Import Failed"
+          message={workspace.allocationError ?? ""}
+          onClose={workspace.clearAllocationError}
+        />
+
         {/* Stage 3 */}
         {workspace.allocationSummary &&
         workspace.clientSummary && (

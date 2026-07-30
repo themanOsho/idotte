@@ -1,4 +1,4 @@
 export const CLIENT_HEADERS = {
-  SERIAL_NUMBER: "S/N",
-  NAME: "NAME",
+  SERIAL_NUMBER: "sn",
+  NAME: "name",
 } as const;

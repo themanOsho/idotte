@@ -31,9 +31,8 @@ export function UnmatchedTable({
 
       </div>
 
-      <div className="overflow-x-auto px-4 pb-4">
-
-        <table className="w-full table-fixed border-collapse text-sm">
+      <div className="max-sm:overflow-x-auto sm:overflow-x-visible px-4 pb-4 rounded-xl border border-border">
+        <table className="sm:min-w-full sm:w-full w-[1000px] lg:table-fixed border-collapse text-sm print:min-w-0">
 
           <colgroup>
             <col style={{ width: "8%" }} />
@@ -42,23 +41,21 @@ export function UnmatchedTable({
           </colgroup>
 
           <thead>
-
             <tr className="bg-red-500/10">
 
-              <th className="border px-4 py-3 text-center font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-center font-semibold">
                 S/N
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Candidate Name
               </th>
 
-              <th className="border px-4 py-3 text-left font-semibold">
+              <th className="whitespace-wrap border px-4 py-3 text-left font-semibold">
                 Status
               </th>
 
             </tr>
-
           </thead>
 
           <tbody>
@@ -70,15 +67,15 @@ export function UnmatchedTable({
                 className="hover:bg-red-50/30"
               >
 
-                <td className="border px-4 py-3 text-center">
+                <td className="whitespace-wrap border px-4 py-3 text-center">
                   {record.client.serialNumber}
                 </td>
 
-                <td className="border px-4 py-3 font-medium break-words">
+                <td className="whitespace-wrap border px-4 py-3 font-medium break-words">
                   {record.client.name}
                 </td>
 
-                <td className="border px-4 py-3">
+                <td className="whitespace-wrap border px-4 py-3">
                     <span className="inline-flex rounded-full bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-600">
                         No allocation found
                     </span>

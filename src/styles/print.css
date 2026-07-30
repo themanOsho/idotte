@@ -2,7 +2,7 @@
 
   @page {
     size: A4 portrait;
-    margin: 6mm;
+    margin: 4mm;
   }
 
   html,
@@ -81,16 +81,48 @@
     max-width: 100%;
   }
 
-}
-
-/* .print-hidden {
-  display: none;
-} */
-
-@media print {
-
   .print-hidden {
     display: none !important;
   }
 
+  
+  .report-page {
+    position: relative;
+    min-height: 100vh;
+  }
+
+  .report-page .overflow-x-auto{
+    overflow:visible !important;
+  }
+
+  .report-page table{
+    min-width:0 !important;
+  }  
+
+  .report-watermark {
+    display: flex;
+
+    position: fixed;
+    inset: 0;
+
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    transform: rotate(-35deg);
+
+    color: rgba(0, 0, 0, 0.05);
+
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+
+    z-index: 0;
+    
+  }
+
+}
+
+.report-watermark {
+  display: none;
 }
