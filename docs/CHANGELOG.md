@@ -6,35 +6,24 @@ Where we are now
 
 Here's the current state of Idotte:
 
-✅ Allocation workbook upload
-✅ Client workbook upload
-✅ Workbook parsing
-✅ Allocation indexing
-✅ Matching engine
-✅ Duplicate detection
-✅ Workspace Overview
-✅ Matching Results Dashboard
-✅ Duplicate Review (accordion)
-✅ Service layer architecture
-✅ Report summary generation
+git commit -m "feat(admission-matching): implement sophisticated fuzzy school-name matching"
 
-At this point, Idotte is processing the data correctly. What's still missing is producing the final deliverable.
 
-At this point Idotte already does the core job:
+BREAKING CHANGE: School matching now uses word-by-word fuzzy comparison instead of exact string equality.
 
-✅ Upload Allocation Dataset
-✅ Parse multiple worksheets
-✅ Validate workbook structure
-✅ Build allocation index
-✅ Upload Client Workbook
-✅ Parse client workbook
-✅ Match candidates
-✅ Detect duplicates
-✅ Detect unmatched candidates
-✅ Produce a professional report UI
-✅ Report cover
-✅ Matched table
-✅ Duplicate review
-✅ Unmatched table
+## Features
+- **Word-by-Word Fuzzy Matching**: Scan school names left to right with geographic name prioritization
+- **Abbreviation Expansion**: COMM/COMMUNITY, JNR/JUNIOR, GRAMM/GRAM/GRAMMAR, SEC/SECONDARY, PRY/PRIMARY, COMP/COMPREHENSIVE, HGH/HIGH, EST/ESTATE, SNR/SENIOR, SCH/SCHOOL, COL/COLL/COLLEGE, GOVT/GOVERNMENT
+- **60% Threshold Rule**: Schools with 4-5 words matching 3+ words = Direct Admission
+- **Fuzzy LGA Resolution**: Find school in directory using fuzzy matching, not exact match
+- **Enhanced Report Output**: Not Admitted now shows matched school name and resolved LGA (no more N/A)
 
-That's essentially Idotte v0.1.
+## Implementation Details
+- normalize-school-name.ts: Enhanced with getSchoolNameTokens(), calculateSchoolNameSimilarity(), isDirectAdmission()
+- classification.ts: Added SchoolResolution interface, fuzzy fallback in LGA resolution, matchedSchoolName field
+- map-client.ts: Updated Not Admitted section to display matched school names and LGAs
+
+## Test Cases Verified
+✓ "COMMUNITY JUNIOR GRAMMAR SCHOOL IPAJA" → "COMM. JNR GRAM, IPAJA" = Direct
+✓ "AJAO ESTATE JUNIOR GRAMMAR SCHOOL" → "AJAO ESTATE SEC. SCH" = Direct
+✓ "OJUWOYE JUNIOR COMPREHENSIVE HIGH SCHOOL MUSHIN" → "OJUWOYE COMP. JUNIOR HIGH" = Direct

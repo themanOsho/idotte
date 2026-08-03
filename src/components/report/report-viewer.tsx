@@ -52,11 +52,11 @@ export function ReportViewer({
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <PrintReportButton />
 
-                <ExportExcelButton
-                allocation={allocation}
-                client={client}
-                result={result}
-                />
+                {/* <ExportExcelButton
+                  allocation={allocation}
+                  client={client}
+                  result={result}
+                /> */}
             </div>
 
         </div>

@@ -1,0 +1,312 @@
+to clear new line
+^\s*\n
+
+
+
+Right now we would keep skip Allocation Database.. (keep it currently in memory) 
+why? The time for Allocation mapping has passed.. until next year
+
+admission list is upcoming in two days from now... so this should be Phase 2.. need Idotte to be production ready and useful before admission list drop
+
+
+
+pg_dump --schema-only --no-owner --no-privileges -d "postgresql://neondb_owner:npg_B0dfjoZ4JzVr@ep-dark-lab-zaqi94f8.c-2.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require" > schema.sql
+
+super-tree-54172301
+
+I think the db will take a lot of time to set up.. 
+Lets quickly implement in memory mapping for admission too then later, against next academic session Idotte will be ready for database lookup.. 
+Draft production ready plan for in memory mapping.
+
+Suppose Client List contains
+S/N     |Name                       |Sex      |Date of Birth  |Local Gov of Origin  |School of Choice               |Passport
+1       |John Doe                   |M        |08/08/2012     |Ogun                 |SURULERE JNR SEC SCH ALAGBADO  |
+
+
+But in the admission list 
+My aunt already have the knowledge that for a sch of choice of SURULERE JNR SEC ALAGBADO.. the correct workbook is ALIMOSHO ZONE and under SURULERE JNR SEC
+Notice how sheet name SURULERE JNR SEC is different from Client List School of Choice value "SURULERE JNR SEC ALAGBADO" 
+we need to also handle this
+
+My Aunt had just provide clear explanation.. the sheets are not divided into sections ADMITTED or NON ADMITTED.. 
+It is grouped by 1st, 2nd or 3rd Lists
+
+ALIMOSHO ZONE				PLACEMENT LIST																					
+SURULERE JUNIOR SECONDARY SCHOOL			SEX	SECOND LIST																					
+1	PT/23/03/32/001	ABDRASHEED AJOKE MARDIYYAH	F	COMM PRIMARY SCHOOL, ILAPO																					
+2	PT/23/03/32/002	ABOABA FUNMILAYO OPEYEMI	F	"                        																					
+3	PT/23/03/32/003	ADAFIN BUKOLA YEMISI	F	"                        																					
+4	PT/23/03/32/004	ADAMS SALIMOT TOYOSI	F	"                        																					
+5	PT/23/03/32/005	ADEBESIN FIYINFOLUWA MARIA	F	"                        																					
+6	PT/23/03/32/006	ADEGBITE ORELOPE OLUWASEGUN	M	"                        																					
+7	PT/23/03/32/007	ADELEKE ADETUTU ZULIKHA	F	"                        																					
+8	PT/23/03/32/008	ADEOLA TOBI IDOWU	M	"                        																					
+9	PT/23/03/32/009	AIYEJUYOMI OLUWATOSIN ELIJAH	M	"                        																					
+
+
+
+10	PT/23/03/32/010	AJAYI KINGPAUL OLUWADAMILARE	M	"                        																					
+11	PT/23/03/32/011	AKINDEMOWO OLUWADMILOLA SEMILORE	F	"                        																					
+12	PT/23/03/32/012	AKINPELU OMOTOLANI OLUWATOBI	F	"                        																					
+13	PT/23/03/32/013	AKINREMI MOYINOLUWA ALICE	F	"                        																					
+14	PT/23/03/32/014	ALIU MISTURA	F	"                        																					
+15	PT/23/03/32/015	ALIU SEMILOGO	F	"                        																					
+16	PT/23/03/32/016	BAKARE SOLIAT TEMITOPE	F	"                        																					
+17	PT/23/03/32/017	BALOGUN AYOMIDE BALIQIS	F	COMMUNITY PRY SCHOOL, SASA 																					
+18	PT/23/03/32/018	BALOGUN ESTHER BUSOLA	F	"                        																					
+19	PT/23/03/32/019	DAKOSSI TEMITOPE ABIGAEL	F	"                        																					
+
+
+
+20	PT/23/03/32/020	DESTINY GIDEON EKPENYONG	M	"                        																					
+21	PT/23/03/32/021	EMEBO UZONNA	M	"                        																					
+22	PT/23/03/32/022	FAKUNLE OLUWATIMILEHIN PELUMI	F	"                        																					
+23	PT/23/03/32/023	FRANCIS CHINAZA	F	"                        																					
+24	PT/23/03/32/024	GODWIN FELICIA	F	"                        																					
+25	PT/23/03/32/025	IFECHUKWIKE DOMINION	M	"                        																					
+26	PT/23/03/32/026	IJIOLA ITUNNU	F	"                        																					
+27	PT/23/03/32/027	ISIAKA AANUOLUWA KABIRAT	F	"                        																					
+28	PT/23/03/32/028	JAMIU OLAMIDE BARAKAT	F	"                        																					
+29	PT/23/03/32/029	JIBRIN HABIBA	F	"                        																					
+
+-- Sample of what each sheet in a workbook looks like.. notice there's no col title?
+Logically, there are 4 cols.. lets give it a name
+S/N |Admission No.|Full Name    |Sex  |Feeder School
+Example usign the first data:
+1	PT/23/03/32/001	ABDRASHEED AJOKE MARDIYYAH	F	COMM PRIMARY SCHOOL, ILAPO
+S/N here is 1
+Admission No. is PT/23/03/32/001
+Full Name is ABDRASHEED AJOKE MARDIYYAH
+Sex is F
+Feeder School is COMM PRIMARY SCHOOL, ILAPO
+
+Because S/N 1 to 16 shares the same Feeder School, no reason to repeat COMM PRIMARY SCHOOL, ILAPO in every data cell but there're replaced with " " "
+
+You will also notice the jumps in row data
+Using S/N 1 to 9 is first admission list (I mean every sch do not realease admission list at a go) so just the same, there is usually first list, second list, 3rd list, supplimentary list etc.. whcih really does not matter it 
+When admission workboook is been placed with no row number jump.. it just mean that the sheet contains only first list. second or third aint out yet
+
+Important S/N here is valuable over row count
+
+
+# Catchmill
+If an already open form is being opened in builder. Block all updates/edits and display a modal msg.. this form is currently been delete or sorry you cannot edit this form, its has been delete or moved
+
+
+# #
+These are the names:
+OSHODI-ISOLO ZONE 2025.xls
+ALIMOSHO ZONE 2025 1.xlsx
+AGEGE ZONE 2025 1.xlsx
+IFAKO IJAIYE ZONE 2025 1.xlsx
+KOSOFE ZONE 2025 1.xlsx
+SURULERE ZONEE 2025 1.xlsx
+AJEROMI IFELODUN ZONE 2025 1.xlsx
+AMUWO ODOFIN ZONE 2025 1.xlsx
+IKEJA ZONE 2025 1.xlsx
+OJO ZONE 2025 1.xlsx
+MUSHIN ZONE 2025 1.xlsx
+APAPA ZONE 2025.xls
+SOMOLU ZONE 2025.xls
+IKORODU ZONE 2025.xls
+LAGOS MAINLAND ZONE 2025.xls
+LAGOS ISLAND ZONE 2025.xls
+EPE ZONE 2025.xls
+IBEJU-LEKKI ZONE 2025.xls
+ETI-OSA ZONE 2025.xls
+BADAGRY ZONE 2025.xls
+
+i actually want to use this data to prepare for 2026 admission that's going to be out soon.. No matter what LGA name and Zone is always constant in the naming
+
+
+AI MODE py
+https://share.google/aimode/vx0ckDlqfrK3Ta2Bg
+
+browser says "unhandledRejection" not defined somewhere in codebase
+
+# Report Structure
+Admission Report
+
+--------------------------------------------------
+Summary
+
+Total Students
+Admitted
+Redirected
+Not Admitted
+
+--------------------------------------------------
+Admitted
+--------------------------------------------------
+School: {School Name}
+LGA: {School's LGA but without the "ZONE"} e.g ALIMOSHO ZONE output ALIMOSHO LGA
+
+```table
+S/N
+Admission No
+Full Name
+Sex
+```
+--------------------------------------------------
+Redirected
+--------------------------------------------------
+
+S/N
+Admission No
+Full Name
+Sex
+Actual School
+Actual Zone
+
+--------------------------------------------------
+Not Admitted
+--------------------------------------------------
+School of Choice: {LGA}
+LGA: {School of Choice's LGA}
+
+S/N
+Admission Status
+Full Name
+Sex
+Feeder School
+
+'ABESAN PRIMARY SCHOOL'
+'ABESAN JNR HIGH'
+
+"OSHODI-ISOLO ZONE": [
+    "AJAO ESTATE SEC. SCH": [
+
+    ]
+]
+
+
+{
+  "ALIMOSHO ZONE": {
+    "SURULERE JNR SEC.": [
+      {
+        "serialNumber": 1,
+        "admissionNumber": "PT/23/03/32/001",
+        "fullName": "ABDRASHEED AJOKE MARDIYYAH",
+        "sex": "F",
+        "feederSchool": "COMM PRIMARY SCHOOL, ILAPO"
+      }
+    ]
+  }
+}
+
+# Hey Grok
+
+We need to implement a function that evaluates student placement data and categorizes each student's admitted status into one of two destination tables: 
+- Admitted Table (Direct Admission) or Redirected Admission Table.
+
+The system must dynamically resolve inconsistent naming conventions between two data sources: the Client List and data/school-directory.json.
+
+# 1. Target Output Tables & Logic
+Admitted Table (Direct Admission): The student was admitted into their exact School of Choice.
+Redirected Admission Table (Scenario A): The student was admitted into a different school, but it is located in the same Local Government Area (LGA) as their original School of Choice.
+Redirected Admission Table (Scenario B): The student was admitted into a different school located in a different LGA than their School of Choice.
+
+# 2. The Matching Challenge
+School names do not match exactly across datasets due to abbreviations and formatting differences.
+Example 1: Client List says COMM JNR GRAMM SCH IPAJA → Directory says COMM. JNR GRAM, IPAJA (LGA: ALIMOSHO).
+Example 2: Client List says AJAO EST JNR GRAMM SCH → Directory says AJAO ESTATE SEC. SCH (LGA: OSHODI-ISOLO).
+
+# 3. Proposed Implementation Strategy
+
+To solve this cleanly without modifying the raw source files, implement the following multi-step matching pipeline:
+Step 1: Student Identity Verification (Exact Match)
+Filter and isolate the student's records in the main dataset using an exact match on Name and Sex.
+Step 2: Text Normalization (Preprocessing)
+Before comparing school names, pass strings through a cleaning function that:
+- Converts all text to lowercase.
+- Removes punctuation (dots, commas, hyphens).
+- Standardizes common abbreviations (e.g., replace jnr with junior, sch with school, gramm or gram with grammar, est with estate). I previously did this in normalize-school-name.ts but somehow you cleared it..
+
+Step 3: Fuzzy String Matching (The "Smart" Boundary Search)
+Use a fuzzy matching library (like RapidFuzz or PolyFuzz) to calculate similarity scores between the Client List's School of Choice and the names listed in school-directory.json.
+- Set a high confidence threshold (e.g., >85%).
+- If a match is found within the threshold, extract that school's official LGA from the directory.
+
+Step 4: Admission Classification
+Compare the student's Actually Admitted School against the resolved School of Choice:
+If Normalized(Actual School) == Normalized(School of Choice) → Admitted Table.
+If they differ, look up the LGA of the Actual School. 
+If Actual LGA == Choice LGA → Redirected Table (Same LGA).
+If LGAs differ → Redirected Table (Outside LGA).
+
+keep "Redirected Admission(s)" for both redirected Scenarios but with their respective values for School and LGA
+
+SEC - SECONDARY
+PRY - PRIMARY
+GRAMM - GRAMMER
+GRAM - GRAMMER
+COMP - COMPREHENSIVE
+COMM - COMMUNITY
+HGH - HIGH
+EST - ESTATE
+JNR - JUNIOR
+SNR - SENIOR
+SCH - SCHOOL
+COL - COLLEGE
+COLL - COLLEGE
+GOVT - GOVERNMENT
+
+
+Rewrite the matching algorithm to correctly identify Direct Admissions based on fuzzy school name matching and validate the student's identity using three core pillars.
+1. School Name Normalization & Keyword Mapping
+Before performing a search, normalize common school naming variations.
+Abbreviation Dictionary:
+COMMUNITY → COMM. or COMM
+JUNIOR → JNR. or JNR
+GRAMMAR → GRAMM. or GRAM
+SECONDARY → SEC. or SEC
+(pls update normalize-school-name, if we're implemented the wrong abbreviation)
+
+2. Matching Logic: Direct vs. Redirected Admission
+Rule A: Direct Admission (Same School)
+An admission is Direct if the student is admitted into their exact school of choice, accounting for abbreviations and threshold matching.
+Word-by-Word Prioritisation: Scan the school name sequentially from left to right. The first word (usually the unique geographical name, e.g., ONITOLO, AJAO, IPAJA) must match or carry the highest priority weight.
+Threshold Rule (> 50% or 60% Match): If a school name contains 4 to 5 words, and at least 3 words match successfully (either exactly or via the abbreviation dictionary), it is a Direct Admission. (But pls do not limit to only the first word)
+Example 1: COMMUNITY JUNIOR GRAMMAR SCHOOL IPAJA (Client List) is a Direct Admission to COMM. JNR GRAM, IPAJA (Datastream).
+Example 2: AJAO ESTATE JUNIOR GRAMMAR SCHOOL (Client List) is a Direct Admission to AJAO ESTATE SEC. SCH (Datastream).
+Example 3: OJUWOYE JUNIOR COMPREHENSIVE HIGH SCHOOL MUSHIN (Client List) ia a Direct Admission to OJUWOYE COMP. JUNIOR HIGH (Datastream)
+
+Rule B: Redirected Admission (Different School, Same LGA)
+An admission is Redirected if the student is placed in a completely different school, even if it is within the same Local Government Area (LGA).
+Example: ONITOLO COMM. JNR HIGH (Client List) redirected to AGUDA COMM. JNR SEC. (Datastream). The first primary keywords (ONITOLO vs AGUDA) do not match.
+Per school directory.. ONITOLO COMM. JNR HIGH and AGUDA COMM. JNR SEC. are both under SURULERE LGA
+
+Rule C: Redirected Admission (Different School, Different LGA)
+An admission is classified under this rule if the student is placed in a completely different school that belongs to a different Local Government Area (LGA) than the original choice.
+Condition 1: The first primary keywords of the school names do not match.
+Condition 2: The schools are registered under entirely different LGAs in the school directory.
+Example:
+Original Choice (Client List): ONITOLO COMM. JNR HIGH (SURULERE LGA)
+Actual Placement (Datastream): IKEJA JNR COLLEGE (IKEJA LGA)
+
+3. Student Identity Verification
+To confirm you have found the actual student across both datasets, perform a strict validation using a combination of these three essential columns from Client List:
+Name: (Apply fuzzy matching/string distance to handle typos or middle name omissions).
+Sex: (Must match exactly).
+School of Choice: (Evaluated using the matching logic in Section 2).
+
+Against Datastream:
+fullName
+sex
+Admitted School {SURULERE JNR SEC.}
+LGA {ALIMOSHO}
+
+In Datastream context, since json data is structured like this:
+{
+  "ALIMOSHO ZONE": {
+    "SURULERE JNR SEC.": [
+      {
+        "serialNumber": 1,
+        "admissionNumber": "PT/23/03/32/001",
+        "fullName": "ABDRASHEED AJOKE MARDIYYAH",
+        "sex": "F",
+        "feederSchool": "COMM PRIMARY SCHOOL, ILAPO"
+      }
+    ]
+  }
+}

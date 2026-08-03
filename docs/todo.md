@@ -184,3 +184,59 @@ Progress updates per worksheet/stage (so users see steady movement rather than 1
 Aggregated validation (report all worksheet issues in one message instead of failing on the first error).
 
 Those changes won't add any new features, but they'll make Idotte feel significantly more reliable and professional for your aunt's day-to-day use.
+
+
+
+# Today
+
+To make absolutely sure we map to the correct "John Doe", we must perform Multi-Attribute Context Matching.
+
+Since we can control the client workbook, we have two different ways to handle this depending on what fields are present on the incoming list.
+------------------------------
+## Strategy 1: The Absolute Best Way (Admission Number Matching)
+The most bulletproof way to separate two people with the same name is to use their unique Admission Number. If you can include an Admission No. column in your client list, the lookup becomes 100% deterministic and cannot make a mistake.
+We change the key lookup from Name to Admission Number. It matches directly with zero ambiguity:
+
+// If the client list provides an admission number, we check that column firstif (clientAdmissionNumber) {
+  // Loop through all records under the name "JOHN DOE"
+  const exactMatch = matchedRecords.find(record => record.admissionNumber === clientAdmissionNumber);
+  if (exactMatch) return exactMatch;
+}
+
+------------------------------
+## Strategy 2: The Contextual Way (School of Choice Alignment)
+If your client lists only provide the Name and School of Choice, we use the intended school as a validation anchor.
+If your client list row says:
+
+* Name: JOHN DOE
+* School of Choice: EWUTUNTUN JNR
+
+The engine pulls down both records from your JSON file and performs a process of elimination:
+
+   1. It looks at the first record: schoolName: "EWUTUNTUN JNR GRAMM SCH". It matches!
+   2. It looks at the second record: schoolName: "SURULERE JNR SEC.". It does not match.
+
+The engine instantly discards the Surulere record and locks onto the Ewutuntun entry, marking him as ADMITTED_AS_EXPECTED.
+------------------------------
+## Strategy 3: The Redirection Guard
+What if both John Does were redirected to completely different schools than what they originally wanted? For example:
+
+* Client List says: JOHN DOE wants AGEGE JNR HIGH.
+* JSON Record 1: Admitted to EWUTUNTUN JNR (Oshodi)
+* JSON Record 2: Admitted to SURULERE JNR (Alimosho)
+
+If both are redirections, the engine cannot guess who is who based on school names. To prevent a false match, the engine flags this row clearly in the data matrix output:
+
+result.isAdmitted = true;
+result.isAmbiguousDuplicate = true; // Flaged for manual double-check
+result.possibleMatchesCount = matchedRecords.length;
+
+This tells your aunt: "We found two students named John Doe who gained admission elsewhere, so please manually check their physical slips to confirm their exact center placement."
+------------------------------
+## Summary Checklist for your 2026 Worksheets
+To make your 2026 data stream completely foolproof against name duplicates across Lagos State, choose one of these adjustments:
+
+* Easiest Fix: Add an Admission No. or Registration No. column to your incoming Client List.
+* No-Change Alternative: Keep using the School of Choice column, and let the matcher code automatically filter duplicates by tracking keyword text overlaps.
+
+If you want to add the Ambiguity Duplicate Flag to your dashboard UI so it highlights duplicates in a distinct color, let me know!

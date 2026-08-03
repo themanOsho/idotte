@@ -22,7 +22,7 @@ export function MatchedTable({
         </p>
       </div>
 
-      <div className="max-sm:overflow-x-auto sm:overflow-x-visible px-4 pb-4 rounded-xl border border-border">
+      <div className="max-sm:overflow-x-auto sm:overflow-x-visible mx-2 mb-2 md:mx-4 md:mb-4 rounded-xl border border-border">
         <table className="sm:min-w-full sm:w-full w-[1000px] lg:table-fixed border-collapse text-sm print:min-w-0">
 
             <colgroup>
