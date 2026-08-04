@@ -8,7 +8,6 @@ Here's the current state of Idotte:
 
 git commit -m "feat(admission-matching): implement sophisticated fuzzy school-name matching"
 
-
 BREAKING CHANGE: School matching now uses word-by-word fuzzy comparison instead of exact string equality.
 
 ## Features

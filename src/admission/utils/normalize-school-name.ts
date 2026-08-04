@@ -7,30 +7,30 @@
     .replace(/[\u00a0\s]+/g, " ")
     .replace(/\bCOMMUNITY\b/g, "COMMUNITY")
     .replace(/\bCOMM\b/g, "COMMUNITY")
-    .replace(/\bJUNIOR\b/g, "JUNIOR")
-    .replace(/\bJNR\b/g, "JUNIOR")
-    .replace(/\bGRAMMAR\b/g, "GRAMMAR")
-    .replace(/\bGRAMM\b/g, "GRAMMAR")
-    .replace(/\bGRAM\b/g, "GRAMMAR")
-    .replace(/\bSECONDARY\b/g, "SECONDARY")
-    .replace(/\bSEC\b/g, "SECONDARY")
-    .replace(/\bPRIMARY\b/g, "PRIMARY")
-    .replace(/\bPRY\b/g, "PRIMARY")
-    .replace(/\bCOMPREHENSIVE\b/g, "COMPREHENSIVE")
-    .replace(/\bCOMP\b/g, "COMPREHENSIVE")
-    .replace(/\bHIGH\b/g, "HIGH")
-    .replace(/\bHGH\b/g, "HIGH")
+    .replace(/\bJUNIOR\b/g, "")
+    .replace(/\bJNR\b/g, "")
+    .replace(/\bGRAMMAR\b/g, "")
+    .replace(/\bGRAMM\b/g, "")
+    .replace(/\bGRAM\b/g, "")
+    .replace(/\bSECONDARY\b/g, "")
+    .replace(/\bSEC\b/g, "")
+    .replace(/\bPRIMARY\b/g, "")
+    .replace(/\bPRY\b/g, "")
+    .replace(/\bCOMPREHENSIVE\b/g, "")
+    .replace(/\bCOMP\b/g, "")
+    .replace(/\bHIGH\b/g, "")
+    .replace(/\bHGH\b/g, "")
     .replace(/\bESTATE\b/g, "ESTATE")
     .replace(/\bEST\b/g, "ESTATE")
-    .replace(/\bSENIOR\b/g, "SENIOR")
-    .replace(/\bSNR\b/g, "SENIOR")
-    .replace(/\bSCHOOL\b/g, "SCHOOL")
-    .replace(/\bSCH\b/g, "SCHOOL")
-    .replace(/\bCOLLEGE\b/g, "COLLEGE")
-    .replace(/\bCOL\b/g, "COLLEGE")
-    .replace(/\bCOLL\b/g, "COLLEGE")
-    .replace(/\bGOVERNMENT\b/g, "GOVERNMENT")
-    .replace(/\bGOVT\b/g, "GOVERNMENT")
+    .replace(/\bSENIOR\b/g, "")
+    .replace(/\bSNR\b/g, "")
+    .replace(/\bSCHOOL\b/g, "")
+    .replace(/\bSCH\b/g, "")
+    .replace(/\bCOLLEGE\b/g, "")
+    .replace(/\bCOL\b/g, "")
+    .replace(/\bCOLL\b/g, "")
+    .replace(/\bGOVERNMENT\b/g, "")
+    .replace(/\bGOVT\b/g, "")
     .replace(/[^A-Z0-9\s]/g, "")
     .replace(/\s+/g, " ")
     .trim();
@@ -64,14 +64,26 @@ export function isDirectAdmission(choiceSchool: string, actualSchool: string): b
     return false;
   }
 
-  const firstWordMatch = choiceTokens[0] === actualTokens[0];
-
-  if (!firstWordMatch && choiceTokens.length > 1 && actualTokens.length > 1) {
+  if (choiceTokens[0] !== actualTokens[0]) {
     return false;
   }
 
-  const matchedTokens = choiceTokens.filter((token) => actualTokens.includes(token));
-  const minRequiredMatches = Math.ceil(Math.max(choiceTokens.length, actualTokens.length) * 0.6);
+  const shorterTokens = choiceTokens.length <= actualTokens.length ? choiceTokens : actualTokens;
+  const longerTokens = choiceTokens.length <= actualTokens.length ? actualTokens : choiceTokens;
 
-  return matchedTokens.length >= minRequiredMatches;
+  const isPrefixMatch = shorterTokens.every((token, index) => token === longerTokens[index]);
+  if (isPrefixMatch) {
+    return true;
+  }
+
+  const hasWordByWordValidation = shorterTokens.every((token, index) => {
+    const alignedToken = longerTokens[index];
+    return token === alignedToken;
+  });
+
+  if (!hasWordByWordValidation) {
+    return false;
+  }
+
+  return true;
 }

@@ -1,6 +1,10 @@
 ﻿import { AdmissionDatastream } from "../types/datastream";
 import { schoolDirectory } from "../data";
-import { normalizeTextToken, isDirectAdmission, getSchoolNameTokens } from "../utils/normalize-school-name";
+import {
+  normalizeTextToken,
+  isDirectAdmission,
+  getSchoolNameTokens,
+} from "../utils/normalize-school-name";
 import { FlatAdmissionMatch } from "../types/admission-result";
 
 export type AdmissionCategory = "ADMITTED" | "REDIRECTED" | "NOT_ADMITTED";
@@ -15,7 +19,7 @@ export interface ClassifiedAdmission extends FlatAdmissionMatch {
 
 function formatLgaLabel(value?: string): string {
   if (!value) return "N/A";
-  return value.replace(/\s+ZONEUTF8/i, "").trim();
+  return value.replace(/\s+ZONEE?$/i, "").trim();
 }
 
 interface SchoolResolution {
@@ -23,67 +27,137 @@ interface SchoolResolution {
   schoolName: string;
 }
 
-function resolveSchoolChoiceLga(choiceSchool: string): SchoolResolution {
-  if (!choiceSchool) return { lga: "N/A", schoolName: "N/A" };
-
-  // First try exact match with normalization
-  const normalizedChoice = normalizeTextToken(choiceSchool);
-  if (!normalizedChoice) return { lga: "N/A", schoolName: "N/A" };
-
-  for (const [zoneName, schools] of Object.entries(schoolDirectory)) {
-    for (const schoolName of schools) {
-      if (normalizeTextToken(schoolName) === normalizedChoice) {
-        return { 
-          lga: formatLgaLabel(zoneName),
-          schoolName: schoolName
-        };
-      }
-    }
-  }
-
-  // If exact match fails, try fuzzy matching
-  for (const [zoneName, schools] of Object.entries(schoolDirectory)) {
-    for (const schoolName of schools) {
-      if (isDirectAdmission(choiceSchool, schoolName)) {
-        return { 
-          lga: formatLgaLabel(zoneName),
-          schoolName: schoolName
-        };
-      }
-    }
-  }
-
-  return { lga: "N/A", schoolName: "N/A" };
+/** Light clean-up only – never strips JNR / SEC / HIGH / SCH etc. */
+function lightNormalize(text: string): string {
+  if (!text) return "";
+  return String(text)
+    .toUpperCase()
+    .replace(/["'''""\\]/g, "")
+    .replace(/[\u00a0\s]+/g, " ")
+    .replace(/[^A-Z0-9\s.]/g, "")   // keep dots so "MEM." stays distinguishable
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-function resolveActualSchoolLga(actualSchool: string): SchoolResolution {
-  if (!actualSchool) return { lga: "N/A", schoolName: "N/A" };
+/**
+ * Score how well a candidate official name matches the client string.
+ * Uses the same token logic that isDirectAdmission already trusts.
+ * Called ONLY after exact-match step has failed.
+ */
+function scoreMatch(client: string, official: string): number {
+  const clientTokens = getSchoolNameTokens(client);
+  const officialTokens = getSchoolNameTokens(official);
+  if (clientTokens.length === 0 || officialTokens.length === 0) return 0;
 
-  const normalizedActual = normalizeTextToken(actualSchool);
-  if (!normalizedActual) return { lga: "N/A", schoolName: "N/A" };
+  // Prefer cases where the first significant token matches
+  if (clientTokens[0] !== officialTokens[0]) return 0;
 
-  // First try exact match with normalization
+  const matched = clientTokens.filter((t) => officialTokens.includes(t)).length;
+  return matched / clientTokens.length;
+}
+
+/**
+ * Resolve any school string to a clean official name + LGA.
+ *
+ * STRICT PRIORITY:
+ *   Step 1 – Exact 1:1 string match (light normalize only) against
+ *            Datastream keys, then schoolDirectory.
+ *            If found → return immediately, stop searching.
+ *   Step 2 – Only when Step 1 yields zero hits: run full token
+ *            normalization + fuzzy scoring.
+ * Never returns the raw client string.
+ */
+function resolveSchool(
+  schoolName: string,
+  datastream?: AdmissionDatastream,
+  zoneHint?: string
+): SchoolResolution {
+  if (!schoolName) return { lga: "N/A", schoolName: "N/A" };
+
+  const light = lightNormalize(schoolName);
+  if (!light) return { lga: "N/A", schoolName: "N/A" };
+
+  // ============================================================
+  // STEP 1 – Exact 1:1 match (no aggressive token stripping)
+  // ============================================================
+
+  // 1a. Exact against Datastream keys (preferred source of truth)
+  if (datastream) {
+    for (const [zoneName, schoolsMap] of Object.entries(datastream)) {
+      if (!schoolsMap) continue;
+      for (const dsSchool of Object.keys(schoolsMap)) {
+        if (lightNormalize(dsSchool) === light) {
+          return {
+            lga: formatLgaLabel(zoneName),
+            schoolName: dsSchool,          // clean Datastream name
+          };
+        }
+      }
+    }
+  }
+
+  // 1b. Exact against schoolDirectory
   for (const [zoneName, schools] of Object.entries(schoolDirectory)) {
-    for (const schoolName of schools) {
-      if (normalizeTextToken(schoolName) === normalizedActual) {
-        return { 
+    for (const dirSchool of schools) {
+      if (lightNormalize(dirSchool) === light) {
+        return {
           lga: formatLgaLabel(zoneName),
-          schoolName: schoolName
+          schoolName: dirSchool,
         };
       }
     }
   }
 
-  // If exact match fails, try fuzzy matching
+  // ============================================================
+  // STEP 2 – Fallback: full normalize + token scoring
+  // (only reached when Step 1 returned zero hits)
+  // ============================================================
+
+  let bestScore = 0;
+  let best: SchoolResolution = { lga: "N/A", schoolName: "N/A" };
+
+  // Prefer Datastream
+  if (datastream) {
+    for (const [zoneName, schoolsMap] of Object.entries(datastream)) {
+      if (!schoolsMap) continue;
+      for (const dsSchool of Object.keys(schoolsMap)) {
+        const score = scoreMatch(schoolName, dsSchool);
+        if (score > bestScore) {
+          bestScore = score;
+          best = {
+            lga: formatLgaLabel(zoneName),
+            schoolName: dsSchool,
+          };
+        }
+      }
+    }
+  }
+
+  // Then directory
   for (const [zoneName, schools] of Object.entries(schoolDirectory)) {
-    for (const schoolName of schools) {
-      if (isDirectAdmission(actualSchool, schoolName)) {
-        return { 
+    for (const dirSchool of schools) {
+      const score = scoreMatch(schoolName, dirSchool);
+      if (score > bestScore) {
+        bestScore = score;
+        best = {
           lga: formatLgaLabel(zoneName),
-          schoolName: schoolName
+          schoolName: dirSchool,
         };
       }
     }
+  }
+
+  // Accept only a strong token match (every client token present)
+  if (bestScore >= 1) {
+    return best;
+  }
+
+  // Absolute last resort
+  if (zoneHint) {
+    return {
+      lga: formatLgaLabel(zoneHint),
+      schoolName: "N/A",
+    };
   }
 
   return { lga: "N/A", schoolName: "N/A" };
@@ -99,23 +173,34 @@ export function classifyAdmission(
   };
 
   if (!match.isAdmitted) {
-    // Even for not admitted, resolve the school choice LGA
-    const resolvedChoice = resolveSchoolChoiceLga(match.clientSchoolChoice);
-    result.matchedSchoolChoice = match.clientSchoolChoice;
+    const resolvedChoice = resolveSchool(match.clientSchoolChoice, datastream);
+    result.matchedSchoolChoice = resolvedChoice.schoolName;
     result.matchedSchoolName = resolvedChoice.schoolName;
     result.matchedChoiceLga = resolvedChoice.lga;
     return result;
   }
 
-  const resolvedChoice = resolveSchoolChoiceLga(match.clientSchoolChoice);
-  const resolvedActual = resolveActualSchoolLga(match.schoolName || "");
+  // Choice (what the student selected) – now handles abbreviations
+  const resolvedChoice = resolveSchool(match.clientSchoolChoice, datastream);
 
-  result.matchedSchoolChoice = match.clientSchoolChoice;
-  result.matchedSchoolName = resolvedChoice.schoolName;
+  // Actual school the student was placed in (already a clean Datastream key)
+  const resolvedActual = resolveSchool(
+    match.schoolName || "",
+    datastream,
+    match.zoneName
+  );
+
+  result.matchedSchoolChoice = resolvedChoice.schoolName; // clean only
+  result.matchedSchoolName =
+    resolvedActual.schoolName !== "N/A"
+      ? resolvedActual.schoolName
+      : match.schoolName || "N/A";
   result.matchedChoiceLga = resolvedChoice.lga;
-  result.actualSchoolLga = resolvedActual.lga;
+  result.actualSchoolLga =
+    resolvedActual.lga !== "N/A"
+      ? resolvedActual.lga
+      : formatLgaLabel(match.zoneName);
 
-  // Use fuzzy matching for direct admission check
   if (isDirectAdmission(match.clientSchoolChoice, match.schoolName || "")) {
     result.category = "ADMITTED";
     return result;

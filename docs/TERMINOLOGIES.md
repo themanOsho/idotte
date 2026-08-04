@@ -44,3 +44,21 @@ Now, for the rest of the day, you can search for anyone instantly by typing a si
 
 Find-Student "MARDIYYAH"
 
+
+
+
+# ################
+$json = Get-Content -Raw -Path "src\admission\data\admission_datastream.json" | ConvertFrom-Json
+foreach ($zone in $json.PSObject.Properties) {
+    foreach ($school in $zone.Value.PSObject.Properties) {
+        $school.Value | Where-Object { $_."Full Name" -like "*TAIWO OPEYEMI BOLUATIFE*" } | ForEach-Object {
+            [PSCustomObject]@{
+                Zone          = $zone.Name
+                School        = $school.Name
+                Name          = $_."Full Name"
+                AdmissionNo   = $_."Admission No."
+                FeederSchool  = $_."Feeder School"
+            }
+        }
+    }
+}

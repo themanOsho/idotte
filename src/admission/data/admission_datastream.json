@@ -2,6 +2,13 @@
   "AGEGE ZONE": {
     "AGEGE JUNIOR COLLEGE": [
       {
+        "S/N": 0,
+        "Admission No.": "PT/25/11/02/000",
+        "Full Name": "TAIWO OPEYEMI BOLUATIFE",
+        "Sex": "M",
+        "Feeder School": "BOSOL GODSWILL N/P SCHOOL"
+      },
+      {
         "S/N": 1,
         "Admission No.": "PT/25/01/01/001",
         "Full Name": "ABBAH JOY EHIKOWOICHO",
@@ -161006,13 +161013,6 @@
         "Feeder School": "IGNEOUS N/P SCHOOL"
       },
       {
-        "S/N": 256,
-        "Admission No.": "PT/25/03/09/256",
-        "Full Name": "FRIDAY BLESSING ISIOMA",
-        "Sex": "F",
-        "Feeder School": "IGNEOUS N/P SCHOOL"
-      },
-      {
         "S/N": 257,
         "Admission No.": "PT/25/03/09/257",
         "Full Name": "AJAYI DANIEL AYOMIDE",
@@ -162331,8 +162331,8 @@
       {
         "S/N": 445,
         "Admission No.": "PT/25/03/09/445",
-        "Full Name": "OGUNBIYI ADEPERO VICTORIA",
-        "Sex": "F",
+        "Full Name": "AJAYI DANIEL AYOMIDE",
+        "Sex": "M",
         "Feeder School": "DIFAVIS INT'L CHILDREN SCHOOL"
       },
       {
@@ -698746,13 +698746,6 @@
         "Feeder School": "BOSOL GODSWILL N/P SCHOOL"
       },
       {
-        "S/N": 116,
-        "Admission No.": "PT/25/11/02/116",
-        "Full Name": "TAIWO OPEYEMI BOLUATIFE",
-        "Sex": "M",
-        "Feeder School": "BOSOL GODSWILL N/P SCHOOL"
-      },
-      {
         "S/N": 117,
         "Admission No.": "PT/25/11/02/117",
         "Full Name": "OKEKE OGECHI PRECIOUS",
@@ -1086424,6 +1086417,13 @@
         "Full Name": "OLUSHOLA MARY TEMITOPE",
         "Sex": "F",
         "Feeder School": "COMSEY N/P SCHOOL"
+      },
+      {
+        "S/N": 57,
+        "Admission No.": "PT/25/16/15/057",
+        "Full Name": "ABDULRAFIU JAMAL AYINDE",
+        "Sex": "M",
+        "Feeder School": "TOSSY INTERNATIONAL SCH."
       }
     ],
     "RANSOME KUTI MEM. SEC.": [
@@ -1086819,13 +1086819,7 @@
         "Sex": "M",
         "Feeder School": "TOSSY INTERNATIONAL SCH."
       },
-      {
-        "S/N": 57,
-        "Admission No.": "PT/25/16/15/057",
-        "Full Name": "ABDULRAFIU JAMAL AYINDE",
-        "Sex": "M",
-        "Feeder School": "TOSSY INTERNATIONAL SCH."
-      },
+
       {
         "S/N": 58,
         "Admission No.": "PT/25/16/15/058",
