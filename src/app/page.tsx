@@ -26,30 +26,85 @@ import { parseClientExcelFile } from "@/admission/engine/parse-client";
 import { generateAndLogAdmissionReport } from "@/admission/engine/map-client";
 import { admissionDatastream, schoolDirectory } from "@/admission/data";
 
+// Admission pipeline
+import { processAdmissionMatching } from "@/admission/services/admission-service";
+import { AdmissionUploadProgress } from "@/admission/types/admission-upload-progress";
+import { AdmissionUploadProgressModal } from "@/admission/components/AdmissionUploadProgressModal";
+import { AdmissionErrorModal } from "@/admission/components/AdmissionErrorModal";
+import { FlatAdmissionMatch } from "@/admission/types/admission-result";
+import { datasetSummary } from "@/admission/engine/dataset-summary";
+import { DatasetSummary } from "@/admission/components/DatasetSummary";
+import { AdmissionMatchingSummary } from "@/admission/components/AdmissionMatchingSummary";
+import { buildAdmissionReportData } from "@/admission/engine/build-report";
+
 type EngineMode = "PLACEMENT" | "ADMISSION";
 
 export default function HomePage() {
   const workspace = useWorkspace();
   const [engineMode, setEngineMode] = useState<EngineMode>("PLACEMENT");
-  const [admissionError, setAdmissionError] = useState<string | null>(null);
 
-  // 2. Specialized processing coordinator for the Admission data stream
+  // ── Admission-only state ──────────────────────────────────────────
+  const [admissionProgress, setAdmissionProgress] =
+    useState<AdmissionUploadProgress | null>(null);
+  const [admissionError, setAdmissionError] = useState<{
+    title: string;
+    message: string;
+  } | null>(null);
+  const [admissionResult, setAdmissionResult] = useState<{
+    matches: FlatAdmissionMatch[];
+    total: number;
+    admitted: number;
+    redirected: number;
+    notAdmitted: number;
+  } | null>(null);
+
   async function handleAdmissionClientUpload(file: File) {
     setAdmissionError(null);
+    setAdmissionResult(null);
+    setAdmissionProgress({
+      stage: "reading",
+      progress: 0,
+      message: "Reading client workbook…",
+      complete: false,
+    });
+
     try {
-      const clientRows = await parseClientExcelFile(file);
-      if (clientRows.length === 0) {
-        throw new Error("No student records found. Check your file columns layout.");
-      }
-      
-      // Execute the deterministic 3-tier mapping pipeline
-      const masterReport = generateAndLogAdmissionReport(clientRows, admissionDatastream);
-      
-      alert("Admission Report generated successfully! Press F12 to check your developer console summaries.");
+      const result = await processAdmissionMatching(file, (p) => {
+        setAdmissionProgress(p);
+      });
+
+      // ── Build report payload (same structure as console report) ──
+      const reportData = buildAdmissionReportData({
+        matches: result.matches,
+        clientFileName: result.preview.fileName,       // from service
+        clientSheetCount: result.preview.sheetCount,   // real sheet count
+        clientRecordCount: result.preview.totalRecords,
+      });
+
+      // Persist so /admission/report works even in a new tab
+      localStorage.setItem("admission-report", JSON.stringify(reportData));
+
+      setAdmissionResult(result);
+
+      // Brief completed state, then clear progress UI
+      setTimeout(() => {
+        setAdmissionProgress(null);
+      }, 1400);
     } catch (err: any) {
-      setAdmissionError(err.message || "An error occurred during admission mapping.");
+      setAdmissionProgress(null);
+      setAdmissionError({
+        title: "Admission Processing Failed",
+        message:
+          err?.message ||
+          "An unexpected error occurred while processing the admission workbook.",
+      });
     }
   }
+
+  const isAdmissionBusy =
+    !!admissionProgress &&
+    !admissionProgress.complete &&
+    admissionProgress.stage !== "error";
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden py-16 sm:py-24">
@@ -80,7 +135,7 @@ export default function HomePage() {
             <button
               type="button"
               onClick={() => setEngineMode("PLACEMENT")}
-              className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-xs font-medium transition-all ${
+              className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-all ${
                 engineMode === "PLACEMENT"
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -93,7 +148,7 @@ export default function HomePage() {
             <button
               type="button"
               onClick={() => setEngineMode("ADMISSION")}
-              className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-xs font-medium transition-all ${
+              className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-all ${
                 engineMode === "ADMISSION"
                   ? "bg-background text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -104,7 +159,7 @@ export default function HomePage() {
             </button>
           </div>
           
-          <p className="text-center text-[11px] text-muted-foreground leading-normal px-2">
+          <p className="text-center text-sm text-muted-foreground leading-normal px-2">
             {engineMode === "PLACEMENT"
               ? "Requires Stage 1 allocation workbook uploading step sequence beforehand to lock layout boundaries."
               : "Uses optimized static local database arrays. Upload your client list directly to get results."
@@ -179,35 +234,42 @@ export default function HomePage() {
             )}
           </>
         ) : (
-          /* Production Independent Admission Ingestion Flow Section Component Block */
-          <div className="space-y-6">
-            <FileUploadCard
-              title="Upload Client List"
-              description="Upload your student list workbook. Columns can be in any sequence structure."
-              buttonText="Process Admission List"
-              icon={<Users className="h-10 w-10 text-primary" />}
-              error={admissionError}
-              accept=".xlsx"
-              onFileSelect={handleAdmissionClientUpload}
-            />
-            
-            <ErrorModal
-              open={!!admissionError}
-              title="Admission Processing Failed"
-              message={admissionError ?? ""}
-              onClose={() => setAdmissionError(null)}
-            />
+          /* ── Admission Flow ─────────────────────────────────── */
+            <div className="space-y-8">
+              {/* Dataset summary – always visible on Admission */}
+              <DatasetSummary summary={datasetSummary} />
+
+              {/* Upload */}
+              <FileUploadCard
+                title="Upload Client List"
+                description="Upload your student list workbook. Columns can be in any sequence structure."
+                buttonText="Process Admission List"
+                icon={<Users className="h-10 w-10 text-primary" />}
+                error={null}
+                accept=".xlsx"
+                onFileSelect={handleAdmissionClientUpload}
+              />
+
+              {/* Matching summary after success */}
+              {admissionResult && !isAdmissionBusy && (
+                <AdmissionMatchingSummary
+                  total={admissionResult.total}
+                  admitted={admissionResult.admitted}
+                  redirected={admissionResult.redirected}
+                  notAdmitted={admissionResult.notAdmitted}
+                  reportHref="/admission/report"
+                />
+              )}
           </div>
         )}
 
-        {/* Global Action Handlers */}
+        {/* Global Placement Error Handlers */}
         <ErrorModal
           open={!!workspace.clientError}
           title="Import Failed"
           message={workspace.clientError ?? ""}
           onClose={workspace.clearClientError}
         />
-
         <ErrorModal
           open={!!workspace.allocationError}
           title="Import Failed"
@@ -258,6 +320,32 @@ export default function HomePage() {
         progress={workspace.uploadProgress}
         complete={workspace.uploadStage === "complete"}
       />
+
+      {/* Admission progress – dedicated, self-contained */}
+      <AdmissionUploadProgressModal
+        open={isAdmissionBusy}
+        title="Processing Admission"
+        progress={admissionProgress?.progress ?? 0}
+        complete={false}
+        message={admissionProgress?.message}
+      />
+
+      {/* Brief completed state */}
+      <AdmissionUploadProgressModal
+        open={!!admissionProgress?.complete}
+        title="Processing Admission"
+        progress={100}
+        complete
+      />
+
+      {/* Admission error – dedicated branding */}
+      <AdmissionErrorModal
+        open={!!admissionError}
+        title={admissionError?.title ?? "Admission Processing Failed"}
+        message={admissionError?.message ?? ""}
+        onClose={() => setAdmissionError(null)}
+      />
+
     </main>
   );
 }

@@ -6,7 +6,6 @@ import { WorkbookPreview } from "@/types/preview";
 import { ClientWorkbookSummary } from "@/types/client";
 import { MatchingResult } from "@/types/matching";
 import { REPORT_CONFIG } from "@/config/report";
-import { ReportHeader } from "./report-header";
 
 interface ReportCoverProps {
   allocation: WorkbookPreview;
